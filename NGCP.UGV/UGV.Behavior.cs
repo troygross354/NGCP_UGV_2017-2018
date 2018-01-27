@@ -356,6 +356,7 @@ namespace NGCP.UGV
             {
                 //State = DriveState.Idle;
             }
+            // @TODO: at this code to function becasue it is repeated horrendously
             if (Waypoints.Count > 0 && Waypoints.TryPeek(out nextWaypoint))
             {
                 if (nextWaypoint != null)
