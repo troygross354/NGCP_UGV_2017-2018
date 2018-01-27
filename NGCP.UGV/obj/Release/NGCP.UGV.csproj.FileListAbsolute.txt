@@ -1,0 +1,10 @@
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\NGCP.UGV.dll
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\NGCP.UGV.pdb
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\CommProtcolMessageStandard.dll
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\CommProtoCSharp.dll
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\UGV.Core.dll
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\CommProtcolMessageStandard.pdb
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\Release\UGV.Core.pdb
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\obj\Release\NGCP.UGV.csprojResolveAssemblyReference.cache
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\obj\Release\NGCP.UGV.dll
+C:\Users\UGV\Documents\GitHub\NGCP_UGV\NGCP.UGV\obj\Release\NGCP.UGV.pdb
