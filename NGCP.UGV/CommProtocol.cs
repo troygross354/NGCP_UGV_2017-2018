@@ -126,6 +126,7 @@ namespace NGCP.UGV
         public void SendArmPosition(int position1, int position2, int position3, int position4, byte id = 1)
         {
             NGCP.ArmPosition ap = new NGCP.ArmPosition(position1, position2, position3, position4);
+            Console.WriteLine("*****************test:"+ap.GetPacketName()); 
             Node.Send(ap, id);
         }
 

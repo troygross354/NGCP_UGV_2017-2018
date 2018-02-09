@@ -468,6 +468,8 @@ namespace NGCP.UGV
             id_servo_GUI = ac.id;
             val_servo_GUI = ac.position;
 
+            Console.WriteLine("********ID: "+ac.id+ "********Position: " + ac.position);
+
             //// this method 
             switch (id_servo_GUI)
             {
@@ -789,12 +791,10 @@ namespace NGCP.UGV
             });
 
             //start camera udp
-            udp_camera = new UdpClientSocket(
-                System.Net.IPAddress.Parse(Settings.VisionHostIP), Settings.CameraHostPort);
+            udp_camera = new UdpClientSocket(System.Net.IPAddress.Parse(Settings.VisionHostIP), Settings.CameraHostPort);
             Links.Add("Camera UDP", udp_camera);
             //define call back
-            udp_armcam = new UdpClientSocket(
-                System.Net.IPAddress.Parse(Settings.VisionHostIP), 8006);
+            udp_armcam = new UdpClientSocket(System.Net.IPAddress.Parse(Settings.VisionHostIP), 8006);
             Links.Add("Arm Camera UDP", udp_armcam);
             udp_armcam.PackageReceived = (bytes =>
             {
@@ -1202,10 +1202,13 @@ namespace NGCP.UGV
                     //int position2 = 0;
                     //int position3 = 0;
                     //int position4 = 0;
-                    byte UGV_ARM_CONTROLER = 100;//define some where else should be changed to a settings value michael wallace 5/12/2017
+                    //byte UGV_ARM_CONTROLER = 100;//define some where else should be changed to a settings value michael wallace 5/12/2017
+                    byte UGV_ARM_CONTROLER = 1;
                     //commProtocol.SendArmPosition(position1, position2, position3, position4, UGV_ARM_CONTROLER);
                     // sending the Base, Shoulder, Elbow, and Gripper present positions
                     commProtocol.SendArmPosition(arm_ugv.Base.dxl_present_position, arm_ugv.Shoulder.dxl_present_position, arm_ugv.Elbow.dxl_present_position, arm_ugv.Gripper.dxl_present_position, UGV_ARM_CONTROLER);
+                    Console.WriteLine("test xbee");
+
                 }
             }
             //inc

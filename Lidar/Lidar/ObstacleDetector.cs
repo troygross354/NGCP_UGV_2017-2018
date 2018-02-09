@@ -53,6 +53,9 @@ namespace ObstacleDetection
             }
             return new VectorSum(count, sum.getAngle(), sum.getMagnitude());*/
 
+            //TODO: add median filter too reduce noise and complexity.
+            //http://ieeexplore.ieee.org/xpls/icp.jsp?arnumber=7279550
+
             //Case based solution
             int count = 0;
             int step;
