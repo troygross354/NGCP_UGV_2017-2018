@@ -39,6 +39,18 @@ namespace UGVBehaviorMap
         /// Local steer change
         /// </summary>
         const int SteerChange = 100;
+        /// <summary>
+        /// Local Arm extension change
+        /// </summary>
+        const int ArmExtensionChange = 50;
+        /// <summary>
+        /// Local arm angle change
+        /// </summary>
+        const int ArmAngleChange = 5;
+        /// <summary>
+        /// Local arm height change
+        /// </summary>
+        const int ArmHeightChange = 50;
 #if logging
         public static System.IO.StreamWriter logFile = new System.IO.StreamWriter(@"C:\Users\UGV_usr\log.txt");
         public static System.IO.StreamWriter encoderLogFile = new System.IO.StreamWriter(@"C:\Users\UGV_usr\encoderLog.txt");
@@ -369,6 +381,41 @@ namespace UGVBehaviorMap
                 {
                     ZoomOut = true;
                 }
+                else if (keyInfo.Key == ConsoleKey.Y)
+                {
+                    //Extend Arm
+                    ugv.LocalArmExtension = ugv.LocalArmExtension >= 1000 ? 1000 : ugv.LocalArmExtension + ArmExtensionChange;
+                }
+                else if (keyInfo.Key == ConsoleKey.H)
+                {
+                    //Retract Arm
+                    ugv.LocalArmExtension = ugv.LocalArmExtension <= 0 ? 0 : ugv.LocalArmExtension - ArmExtensionChange;
+                }
+                else if (keyInfo.Key == ConsoleKey.G)
+                {
+                    //Decrease arm angle
+                    ugv.LocalArmAngle = ugv.LocalArmAngle <= -90 ? -90 : ugv.LocalArmAngle - ArmAngleChange;
+                }
+                else if (keyInfo.Key == ConsoleKey.J)
+                {
+                    //Increase arm angle
+                    ugv.LocalArmAngle = ugv.LocalArmAngle >= 90 ? 90 : ugv.LocalArmAngle + ArmAngleChange;
+                }
+                else if (keyInfo.Key == ConsoleKey.T)
+                {
+                    //Toggle gripper
+                    ugv.LocalArmGripper = !ugv.LocalArmGripper;
+                }
+                else if (keyInfo.Key == ConsoleKey.F)
+                {
+                    //Raise the end effector (decrease the value)
+                    ugv.LocalArmHeight = ugv.LocalArmHeight <= 0 ? 0 : ugv.LocalArmHeight - ArmHeightChange;
+                }
+                else if (keyInfo.Key == ConsoleKey.V)
+                {
+                    //Lower the end effector (increase the value)
+                    ugv.LocalArmHeight = ugv.LocalArmHeight >= 1000 ? 1000 : ugv.LocalArmHeight + ArmHeightChange;
+                }
 #if logging
                 else if (keyInfo.Key == ConsoleKey.L)
                 {
@@ -428,7 +475,10 @@ namespace UGVBehaviorMap
             output.Append(String.Format("\nAuton: Speed {0, 7} Steer {1, 7} ", ugv.Speed, ugv.Steering));
             output.Append(String.Format("\nFinal: Speed {0, 7} Steer {1, 7} ", ugv.FinalFrontWheel, ugv.FinalSteering));
             //output.Append(String.Format("\nPayload X coor  {0, 7} Payload Y coor {1, 7} ", ugv.payloadx, ugv.payloady));
-
+            output.Append(String.Format("\n--- Arm ---"));
+            output.Append(String.Format("\nLocal: Extension {0,6} Angle {1,4} Height {2,4} Gripper {3,4} ", ugv.LocalArmExtension, ugv.LocalArmAngle, ugv.LocalArmHeight, ugv.LocalArmGripper ? "Closed" : "Open"));
+            output.Append(String.Format("\nAuton: "));
+            output.Append(String.Format("\nFinal: Extension {0,6} Angle {1,4} Height {2,4} Gripper {3,4}", ugv.FinalArmExtension, ugv.FinalArmAngle, ugv.FinalArmHeight, ugv.FinalArmGripper ? "Closed" : "Open"));
             output.Append("\n--- Debug ---  " + ugv.DebugMessage);
             {
                 //locked on location
@@ -456,6 +506,7 @@ namespace UGVBehaviorMap
             Console.WriteLine(output);
             Console.WriteLine("(E = Safety Switch) (P = Bypass 1st Waypoint) (WASD = Local Control)");
             Console.WriteLine("(M = Map) (C = Center Tracking) (Z = Zero Control)");
+            Console.WriteLine("(YGHJ = Arm Contorl) (FV = Gripper Height) (T = Gripper Toggle)");
             Console.WriteLine("(F1 = Local Mode) (F2 = SemiAuto Mode) (F3 = Auto Mode) (R = Reset Mission)");
         }
 
