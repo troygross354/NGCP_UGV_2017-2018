@@ -57,6 +57,27 @@ namespace NGCP.UGV
         /// </summary>
         public double LocalSteering;
 
+        /// <summary>
+        /// Factor to control the arm's extension (radius)
+        /// </summary>
+        public double LocalArmExtension;
+
+        /// <summary>
+        /// Factor to control the arm's angle (theta)
+        /// </summary>
+        public double LocalArmAngle;
+
+        ///<summary>
+        /// Factor to control the arm's height (z-axis)
+        /// </summary>
+        public double LocalArmHeight;
+
+        ///<summary>
+        /// Bool to contorl the arm's gripper (0=open, 1=closed)
+        /// </summary>
+        public bool LocalArmGripper = false;
+
+
         #region Autonomous Related
 
         /// <summary>
@@ -85,6 +106,30 @@ namespace NGCP.UGV
         /// Final output for Steer
         /// </summary>
         public double FinalSteering { get; private set; }
+
+        /// <summary>
+        /// Final output for arm extension (radius)
+        /// </summary>
+        public double FinalArmExtension { get; private set; }
+
+        ///<summary>
+        /// Final output for arm extension (theta)
+        /// </summary>
+        public double FinalArmAngle { get; private set; }
+
+        ///<summary>
+        /// Final output for arm height (z-axis)
+        /// </summary>
+        public double FinalArmHeight { get; private set; }
+
+        /// <summary>
+        /// Bool output for gripper (0=open, 1=closed)
+        /// </summary>
+        public bool FinalArmGripper { get; private set; }
+
+        /// <summary>
+        /// Settings of UGV
+        /// </summary>
 
         /// <summary>
         /// Settings of UGV
@@ -1064,6 +1109,10 @@ namespace NGCP.UGV
                 FinalFrontWheel = (LocalSpeed * 255.0 / 1000.0);
                 FinalRearWheel = (LocalSpeed * 255.0 / 1000.0);
                 FinalSteering = (-LocalSteering * 340 / 1000.0) + 2048; // changed from 100 to 340, from 512 to 2048
+                FinalArmExtension = (LocalArmExtension * 255.0 / 1000.0); //No conversion factor has been determined yet
+                FinalArmAngle = (LocalArmAngle * 1); //No conversion factor has been determined yet
+                FinalArmHeight = (LocalArmHeight * 1); //No conversion factor has been determined yet
+                FinalArmGripper = LocalArmGripper;
             }
             //make sure vehicle is enabled
             if (Enabled)
@@ -1071,12 +1120,19 @@ namespace NGCP.UGV
                 FinalFrontWheel = Math.Min(Math.Max(FinalFrontWheel, -255), 255);
                 FinalRearWheel = Math.Min(Math.Max(FinalRearWheel, -255), 255);
                 FinalSteering = Math.Min(Math.Max(FinalSteering, 1720), 2400); // changed from 412 to 1720, changed from 612 to 2400
+                FinalArmExtension = Math.Min(Math.Max(FinalArmExtension, 0), 255);
+                FinalArmAngle = Math.Min(Math.Max(FinalArmAngle, -90), 90);
+                FinalArmHeight = Math.Min(Math.Max(FinalArmHeight, 0), 1000);
             }
             else
             {
                 FinalFrontWheel = 0;
                 FinalRearWheel = 0;
                 FinalSteering = 0;
+                FinalArmExtension = 0;
+                FinalArmAngle = 0;
+                FinalArmHeight = 0;
+                FinalArmGripper = false;
             }
 
             //prepare control
