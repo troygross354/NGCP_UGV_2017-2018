@@ -56,14 +56,11 @@ namespace ObstacleDetection
             //Case based solution
             int count = 0;
             int step;
-            bool front = false;
-            bool left = false;
-            bool right = false;
-            double closestLeft = maxDistance;
-            double closestRight = maxDistance;
-            double closestFront  = maxDistance;
-
-
+            double Beta = .1; // Scaling Factor
+            int ClosestRange = 0; //Closest Range to object
+            double[] RVect = new double[] { 0, 0 };
+            double RMagn;
+            double RAngle; 
             for (int i = 0; i < stepDistances.Count; i++)
             {
                 step = i + startStep;
@@ -72,45 +69,31 @@ namespace ObstacleDetection
                 {
                     double magnitude = stepDistances[i] * .001;
                     double angle = stepToRadians(step);
-                    if (angle > -45 * Math.PI / 180 && angle < 45 * Math.PI / 180)
+                    if(magnitude < ClosestRange)
                     {
-                        front = true;
-                        if (closestFront > magnitude)
-                            closestFront = magnitude;
+                        RVect[0] -= 100000 * Math.Cos(angle);
+                        RVect[1] -= 100000 * Math.Sin(angle); 
                     }
-
-                    else if (angle < -45 * Math.PI / 180 && angle > -100 * Math.PI / 180)
+                    else if (ClosestRange <= magnitude)
                     {
-                        right = true;
-                        if (closestRight > magnitude)
-                            closestRight = magnitude;
-                    }
-                    else if (angle > 45 * Math.PI / 180 && angle < 100 * Math.PI / 180)
-                    {
-                        left = true;
-                        if (closestLeft > magnitude)
-                            closestLeft = magnitude;
+                        RMagn = Beta * ((1 / (this.maxDistance + ClosestRange)) - 1 / (magnitude)) * ((1 / magnitude) * 1 / magnitude);
+                        RVect[0] += RMagn * Math.Cos(angle);
+                        RVect[1] += RMagn * Math.Sin(angle);
                     }
                     count++;
-                    
                 }
             }
-            if (front && left && right)
-                return new VectorSum(count, 0, 1 / Math.Min(closestFront, Math.Min(closestLeft, closestRight)));
-            else if (front && left)
-                return new VectorSum(count, 45 * Math.PI / 180, 1 / Math.Min(closestFront, closestLeft));
-            else if (front && right)
-                return new VectorSum(count, -45 * Math.PI / 180, 1 / Math.Min(closestFront, closestRight));
-            else if (left && right)
-                return new VectorSum(count, 180 * Math.PI / 180, 1 / Math.Min(closestLeft, closestRight));
-            else if (left)
-                return new VectorSum(count, 90 * Math.PI / 180, 1 / closestLeft);
-            else if (right)
-                return new VectorSum(count, -90 * Math.PI / 180, 1 / closestRight);
-            else if (front)
-                return new VectorSum(count, 0, 1 / closestFront);
-            else
-                return new VectorSum(count, 180 * Math.PI / 180, 0);
+            RMagn = Math.Sqrt(Math.Pow(RVect[0], 2) + Math.Pow(RVect[1], 2));
+            RAngle = Math.Atan2(RVect[1], RVect[0]) * 180 / Math.PI;
+            if(RAngle > 360)
+            {
+                RAngle = RAngle - 360; 
+            }
+            else if(RAngle < -360)
+            {
+                RAngle = RAngle + 360; 
+            }
+            return new VectorSum(count,RAngle*Math.PI/180,RMagn);
         }
 
         //Set the max distance in milimieters
