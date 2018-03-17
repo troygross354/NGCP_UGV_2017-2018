@@ -341,7 +341,8 @@ namespace NGCP.UGV
             //    State = DriveState.GotoBall;
             //    return;
             //}
-
+            double Alpha = 1;
+            double MaxSpeed = 1; //not sure of effect of different sized vectors
             if (Waypoints.Count == 0 && usePathGen && !goToSafe)
             {
                 State = DriveState.GenerateSearchPath;
@@ -356,7 +357,6 @@ namespace NGCP.UGV
             {
                 //State = DriveState.Idle;
             }
-            // @TODO: at this code to function becasue it is repeated horrendously
             if (Waypoints.Count > 0 && Waypoints.TryPeek(out nextWaypoint))
             {
                 if (nextWaypoint != null)
@@ -371,15 +371,10 @@ namespace NGCP.UGV
                         if (AvoidanceVector.magnitude > 0)
                         {
                             SumVector = new Vector2d(currentLocation, nextWaypoint);
-                            SumVector.magnitude /= SumVector.magnitude; //Normalize
-                            SumVector.magnitude *= 0.7; // Influence
-
-                            AvoidanceVector.magnitude /= AvoidanceVector.magnitude; //Normalize
-                            AvoidanceVector.magnitude *= 0.3; //Influence
-                            //SumVector -= AvoidanceVector;
-
-                            SumVector += AvoidanceVector;                   // changed from (-) --> (+)
-
+                            SumVector.magnitude /= SumVector.magnitude; //Normalize(Check if normalize is needed)
+                            SumVector.magnitude *= Alpha*MaxSpeed; // Influence(Check if maxspeed is needed)
+                            AvoidanceVector.angle = (AvoidanceVector.angle + 90 + Heading);// Make Lidar data relative to robot position 
+                            SumVector += AvoidanceVector;                   
                             SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
                             nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
                         }
@@ -1227,3 +1222,6 @@ namespace NGCP.UGV
         #endregion
     }
 }
+
+
+
