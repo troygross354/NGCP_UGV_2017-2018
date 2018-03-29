@@ -57,7 +57,7 @@ namespace ObstacleDetection
             int count = 0;
             int step;
             double Beta = .1; // Scaling Factor
-            int ClosestRange = 0; //Closest Range to object
+            int ClosestRange = 0; //Closest Range to object might not be necessary 
             double[] RVect = new double[] { 0, 0 };
             double RMagn;
             double RAngle; 
@@ -67,25 +67,25 @@ namespace ObstacleDetection
                 //Ignore Data that is greater than maxDistance or is infinity
                 if (stepDistances[i] * 0.001 <= maxDistance && stepDistances[i] != 1 && stepDistances[i] >= 200)
                 {
-                    double magnitude = stepDistances[i] * .001;
-                    double angle = stepToRadians(step);
-                    if(magnitude < ClosestRange)
+                    double magnitude = stepDistances[i] * .001;//What they use to convert to meters i assume
+                    double angle = stepToRadians(step);//converting to radians
+                    if(magnitude < ClosestRange)//If closest obstacle is within closest range max avoid
                     {
-                        RVect[0] -= 100000 * Math.Cos(angle);
-                        RVect[1] -= 100000 * Math.Sin(angle); 
+                        RVect[0] -= 100000 * Math.Cos(angle);//max x
+                        RVect[1] -= 100000 * Math.Sin(angle); //max y 
                     }
-                    else if (ClosestRange <= magnitude)
+                    else if (ClosestRange <= magnitude)//calculate avoidance magnitude for obstacle detected
                     {
-                        RMagn = Beta * ((1 / (this.maxDistance + ClosestRange)) - 1 / (magnitude)) * ((1 / magnitude) * 1 / magnitude);
-                        RVect[0] += RMagn * Math.Cos(angle);
-                        RVect[1] += RMagn * Math.Sin(angle);
+                        RMagn = Beta * ((1 / (this.maxDistance + ClosestRange)) - 1 / (magnitude)) * ((1 / magnitude) * 1 / magnitude);//calculate magn
+                        RVect[0] += RMagn * Math.Cos(angle);//convert to x component
+                        RVect[1] += RMagn * Math.Sin(angle);//convert to y component
                     }
                     count++;
                 }
             }
-            RMagn = Math.Sqrt(Math.Pow(RVect[0], 2) + Math.Pow(RVect[1], 2));
-            RAngle = Math.Atan2(RVect[1], RVect[0]) * 180 / Math.PI;
-            if(RAngle > 360)
+            RMagn = Math.Sqrt(Math.Pow(RVect[0], 2) + Math.Pow(RVect[1], 2));//repulsion magnitude
+            RAngle = Math.Atan2(RVect[1], RVect[0]) * 180 / Math.PI;//repulsion angle
+            if(RAngle > 360)// make sure between 0 and 360 (might be unnessecary)
             {
                 RAngle = RAngle - 360; 
             }
