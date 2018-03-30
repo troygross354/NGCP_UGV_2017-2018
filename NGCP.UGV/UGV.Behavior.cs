@@ -374,7 +374,7 @@ namespace NGCP.UGV
                             SumVector.magnitude /= SumVector.magnitude; //Normalize(Check if normalize is needed)
                             SumVector.magnitude *= Alpha*MaxSpeed; // Influence(Check if maxspeed is needed)
                             AvoidanceVector.angle = (AvoidanceVector.angle + 90 + Heading);// Make Lidar data relative to robot position 
-                            SumVector += AvoidanceVector;                   
+                            SumVector += AvoidanceVector; //combine Avoidance and Attraction vector                  
                             SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
                             nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
                         }
@@ -1216,7 +1216,33 @@ namespace NGCP.UGV
                 State = DriveState.Idle;        // should add a state to retract the payload or handle while in current state
             }
         }
+        /*
+        public static double[] triangles(double d, double theta)
 
+        {
+
+            double deltaX = 1; //difference from camera to arm in x plane
+
+            double deltaY = 1; //difference from camera to arm in y plane
+
+            double[] length = new double[5]; //[0] is x and [1] is y of camera; [2] is x and [3] is y and [4] is hypotenuse of arm
+
+            length[0] = d * Math.Cos(theta);
+
+            length[1] = d * Math.Sin(theta);
+
+            length[2] = length[0] - deltaX;
+
+            length[3] = length[1] - deltaY;
+
+            length[4] = Math.Sqrt((length[2] * length[2]) + (length[3] * length[3]));
+
+            return length;
+
+
+
+        }
+        */
         #endregion
 
         #endregion
