@@ -401,63 +401,63 @@ namespace UGVBehaviorMap
         /// </summary>
         static void TimerTick(object sender, EventArgs e)
         {
-            //StringBuilder output = new StringBuilder();
-            //output.Append("Status Update " + DateTime.Now + " (Auth Node ID: " + /*ugv.AuthNodeID +*/ ")");
-            //output.Append("\n(Mode : " + ugv.Settings.DriveMode + ") (State : " + ugv.State + ")");
-            //output.Append("\n--- IO Link Status ---\n");
-            //foreach (var kv in ugv.Links)
-            //    output.Append("<" + kv.Key + " = " + (kv.Value.IsActive() ? "ON" : "OFF") + ">");
-            ////output.Append("\n--- Orientation ---   GPS Time = " + ugv.GPSTime);
-            //output.Append(String.Format("\n(Lat, Long) = {0:N9} {1:N9}", ugv.Latitude, ugv.Longitude));
-            //output.Append(String.Format("\n(Pitch, Roll, Heading) = {0:N5} {1:N5} {2:N5}"
-            //    , (ugv.Pitch * 180.0 / Math.PI), (ugv.Roll * 180.0 / Math.PI), (ugv.Heading * 180.0 / Math.PI)));
-            ////output.Append("\nGround Speed = " + ugv.GroundSpeed + ", Track Angle = " + ugv.TrackAngle + ", GPS Lock = " + ugv.GPSLock + ", " + ugv.SatelliteCount);
-            //output.Append("\n--- Navigation ---    Inside Boundary: " + ugv.InsideBoundary + " close:" + ugv.CloseBoundary + " Inside SafeZone: " + ugv.InsideSafeZone);
-            ////output.Append(String.Format("\nEncoder: Speed {0, 7} Steering {1, 7} ", ugv.EncoderSpeed, ugv.EncoderTurn));
-            ////output.Append(String.Format("\nEncoder: Latitude {0, 7} Longitude {1, 7} ", ugv.EncoderLat, ugv.EncoderLon));
-            ////output.Append(String.Format("\nEncoder Clicks: Left {0, 7} Right {1, 7} ", ugv.LeftClicks, ugv.RightClicks));
-            //output.Append(String.Format("\nGPS:    Distance = {0:N5} m, Bearing = {1:N5} | {2:N5} degree"
-            //    , ugv.NextWaypointDistance, (ugv.NextWaypointBearing * 180.0 / Math.PI), (ugv.NextWaypointBearingError * 180.0 / Math.PI)));
-            //output.Append(String.Format("\nLine Count {0, 7}", ugv.LineCount));
-            //output.Append(String.Format("\nAvoidance Vector: Angle {0, 7}, Magnitude {1, 7}", ugv.AvoidanceVector.angle * 180.0 / Math.PI, ugv.AvoidanceVector.magnitude));
-            //output.Append(String.Format("\nSum Vector: Angle {0, 7}, Magnitude {1, 7}", ugv.SumVector.angle * 180.0 / Math.PI, ugv.SumVector.magnitude));
-            //output.Append(String.Format("\nTarget Found {0, 7}", ugv.TargetFound));
-            //output.Append(String.Format("\nTarget Vector: Angle {0, 7}, Distance {1, 7}", ugv.TargetAngle, ugv.TargetDistance));
-            ////output.Append(String.Format("\nTarget Waypoint: Lat {0, 7}, Long {1, 7}", ugv.TargetWaypoint.Lat, ugv.TargetWaypoint.Long));
-            //output.Append("\n--- Control ---    Safety Switch: " + !ugv.Enabled + " Protonet Override: " + ugv.CommOverride);
-            //output.Append(String.Format("\nLocal: Speed {0, 7} Steer {1, 7} ", ugv.LocalSpeed, ugv.LocalSteering));
-            //output.Append(String.Format("\nAuton: Speed {0, 7} Steer {1, 7} ", ugv.Speed, ugv.Steering));
-            //output.Append(String.Format("\nFinal: Speed {0, 7} Steer {1, 7} ", ugv.FinalFrontWheel, ugv.FinalSteering));
-            ////output.Append(String.Format("\nPayload X coor  {0, 7} Payload Y coor {1, 7} ", ugv.payloadx, ugv.payloady));
+            StringBuilder output = new StringBuilder();
+            output.Append("Status Update " + DateTime.Now + " (Auth Node ID: " + /*ugv.AuthNodeID +*/ ")");
+            output.Append("\n(Mode : " + ugv.Settings.DriveMode + ") (State : " + ugv.State + ")");
+            output.Append("\n--- IO Link Status ---\n");
+            foreach (var kv in ugv.Links)
+                output.Append("<" + kv.Key + " = " + (kv.Value.IsActive() ? "ON" : "OFF") + ">");
+            //output.Append("\n--- Orientation ---   GPS Time = " + ugv.GPSTime);
+            output.Append(String.Format("\n(Lat, Long) = {0:N9} {1:N9}", ugv.Latitude, ugv.Longitude));
+            output.Append(String.Format("\n(Pitch, Roll, Heading) = {0:N5} {1:N5} {2:N5}"
+                , (ugv.Pitch * 180.0 / Math.PI), (ugv.Roll * 180.0 / Math.PI), (ugv.Heading * 180.0 / Math.PI)));
+            //output.Append("\nGround Speed = " + ugv.GroundSpeed + ", Track Angle = " + ugv.TrackAngle + ", GPS Lock = " + ugv.GPSLock + ", " + ugv.SatelliteCount);
+            output.Append("\n--- Navigation ---    Inside Boundary: " + ugv.InsideBoundary + " close:" + ugv.CloseBoundary + " Inside SafeZone: " + ugv.InsideSafeZone);
+            //output.Append(String.Format("\nEncoder: Speed {0, 7} Steering {1, 7} ", ugv.EncoderSpeed, ugv.EncoderTurn));
+            //output.Append(String.Format("\nEncoder: Latitude {0, 7} Longitude {1, 7} ", ugv.EncoderLat, ugv.EncoderLon));
+            //output.Append(String.Format("\nEncoder Clicks: Left {0, 7} Right {1, 7} ", ugv.LeftClicks, ugv.RightClicks));
+            output.Append(String.Format("\nGPS:    Distance = {0:N5} m, Bearing = {1:N5} | {2:N5} degree"
+                , ugv.NextWaypointDistance, (ugv.NextWaypointBearing * 180.0 / Math.PI), (ugv.NextWaypointBearingError * 180.0 / Math.PI)));
+            output.Append(String.Format("\nLine Count {0, 7}", ugv.LineCount));
+            output.Append(String.Format("\nAvoidance Vector: Angle {0, 7}, Magnitude {1, 7}", ugv.AvoidanceVector.angle * 180.0 / Math.PI, ugv.AvoidanceVector.magnitude));
+            output.Append(String.Format("\nSum Vector: Angle {0, 7}, Magnitude {1, 7}", ugv.SumVector.angle * 180.0 / Math.PI, ugv.SumVector.magnitude));
+            output.Append(String.Format("\nTarget Found {0, 7}", ugv.TargetFound));
+            output.Append(String.Format("\nTarget Vector: Angle {0, 7}, Distance {1, 7}", ugv.TargetAngle, ugv.TargetDistance));
+            //output.Append(String.Format("\nTarget Waypoint: Lat {0, 7}, Long {1, 7}", ugv.TargetWaypoint.Lat, ugv.TargetWaypoint.Long));
+            output.Append("\n--- Control ---    Safety Switch: " + !ugv.Enabled + " Protonet Override: " + ugv.CommOverride);
+            output.Append(String.Format("\nLocal: Speed {0, 7} Steer {1, 7} ", ugv.LocalSpeed, ugv.LocalSteering));
+            output.Append(String.Format("\nAuton: Speed {0, 7} Steer {1, 7} ", ugv.Speed, ugv.Steering));
+            output.Append(String.Format("\nFinal: Speed {0, 7} Steer {1, 7} ", ugv.FinalFrontWheel, ugv.FinalSteering));
+            //output.Append(String.Format("\nPayload X coor  {0, 7} Payload Y coor {1, 7} ", ugv.payloadx, ugv.payloady));
 
-            //output.Append("\n--- Debug ---  " + ugv.DebugMessage);
-            //{
-            //    //locked on location
-            //    if (ugv.TargetLockedLocation != null)
-            //    {
-            //        output.Append(String.Format("\nLock On: LAT:{0:N7} LON:{1:N7}"
-            //            , ugv.TargetLockedLocation.Lat, ugv.TargetLockedLocation.Long));
-            //        output.Append(" Dropped: " + ugv.TargetDropped);
-            //    }
-            //    //get waypoint count
-            //    int c = Math.Min(4, ugv.Waypoints.Count);
-            //    output.Append("\nFirst " + c + " Waypoints in Queue (" + ugv.Waypoints.Count + "): ");
-            //    //read waypoing, but avoid crash
-            //    try
-            //    {
-            //        if (c > 0)
-            //            foreach (var waypoint in ugv.Waypoints.ToList().GetRange(0, c))
-            //                output.Append(String.Format("\n  LAT:{0:N7} LON:{1:N7} - {2,-10} "
-            //                    , waypoint.Lat, waypoint.Long, waypoint.GUID.ToString()));
-            //    }
-            //    catch (Exception) { }
-            //}
+            output.Append("\n--- Debug ---  " + ugv.DebugMessage);
+            {
+                //locked on location
+                if (ugv.TargetLockedLocation != null)
+                {
+                    output.Append(String.Format("\nLock On: LAT:{0:N7} LON:{1:N7}"
+                        , ugv.TargetLockedLocation.Lat, ugv.TargetLockedLocation.Long));
+                    output.Append(" Dropped: " + ugv.TargetDropped);
+                }
+                //get waypoint count
+                int c = Math.Min(4, ugv.Waypoints.Count);
+                output.Append("\nFirst " + c + " Waypoints in Queue (" + ugv.Waypoints.Count + "): ");
+                //read waypoing, but avoid crash
+                try
+                {
+                    if (c > 0)
+                        foreach (var waypoint in ugv.Waypoints.ToList().GetRange(0, c))
+                            output.Append(String.Format("\n  LAT:{0:N7} LON:{1:N7} - {2,-10} "
+                                , waypoint.Lat, waypoint.Long, waypoint.GUID.ToString()));
+                }
+                catch (Exception) { }
+            }
 
-            //Console.Clear();
-            //Console.WriteLine(output);
-            //Console.WriteLine("(E = Safety Switch) (P = Bypass 1st Waypoint) (WASD = Local Control)");
-            //Console.WriteLine("(M = Map) (C = Center Tracking) (Z = Zero Control)");
-            //Console.WriteLine("(F1 = Local Mode) (F2 = SemiAuto Mode) (F3 = Auto Mode) (R = Reset Mission)");
+            Console.Clear();
+            Console.WriteLine(output);
+            Console.WriteLine("(E = Safety Switch) (P = Bypass 1st Waypoint) (WASD = Local Control)");
+            Console.WriteLine("(M = Map) (C = Center Tracking) (Z = Zero Control)");
+            Console.WriteLine("(F1 = Local Mode) (F2 = SemiAuto Mode) (F3 = Auto Mode) (R = Reset Mission)");
         }
 
 #region Registry
