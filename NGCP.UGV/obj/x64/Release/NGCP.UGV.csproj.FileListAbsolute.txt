@@ -16,3 +16,11 @@ C:\Users\cocod\Documents\GitHub\NGCP_UGV\NGCP.UGV\bin\x64\Release\UGV.Core.pdb
 C:\Users\cocod\Documents\GitHub\NGCP_UGV\NGCP.UGV\obj\x64\Release\NGCP.UGV.csprojResolveAssemblyReference.cache
 C:\Users\cocod\Documents\GitHub\NGCP_UGV\NGCP.UGV\obj\x64\Release\NGCP.UGV.dll
 C:\Users\cocod\Documents\GitHub\NGCP_UGV\NGCP.UGV\obj\x64\Release\NGCP.UGV.pdb
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\NGCP.UGV.dll
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\NGCP.UGV.pdb
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\UGV.Core.dll
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\CommProtcolMessageStandard.pdb
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\UGV.Core.pdb
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.csprojResolveAssemblyReference.cache
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.dll
+C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.pdb

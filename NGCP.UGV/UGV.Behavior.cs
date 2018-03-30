@@ -341,8 +341,8 @@ namespace NGCP.UGV
             //    State = DriveState.GotoBall;
             //    return;
             //}
-            double Alpha = 1;
-            double MaxSpeed = 1; //not sure of effect of different sized vectors
+            //double Alpha = 1;
+            //double MaxSpeed = 1; //not sure of effect of different sized vectors
             if (Waypoints.Count == 0 && usePathGen && !goToSafe)
             {
                 State = DriveState.GenerateSearchPath;
@@ -364,22 +364,24 @@ namespace NGCP.UGV
                     WayPoint currentLocation = new WayPoint(Latitude, Longitude, 0);
                     WaypointVector = new Vector2d(currentLocation, nextWaypoint);
                     NextWaypointDistance = WayPoint.GetDistance(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
-                    // ************* Obstacle Avoidance Code ******************
-                    // Everything is in meters and radians
-                    if (Settings.UseVision)
-                    {
-                        if (AvoidanceVector.magnitude > 0)
-                        {
-                            SumVector = new Vector2d(currentLocation, nextWaypoint);
-                            SumVector.magnitude /= SumVector.magnitude; //Normalize(Check if normalize is needed)
-                            SumVector.magnitude *= Alpha*MaxSpeed; // Influence(Check if maxspeed is needed)
-                            AvoidanceVector.angle = (AvoidanceVector.angle + 90 + Heading);// Make Lidar data relative to robot position 
-                            SumVector += AvoidanceVector; //combine Avoidance and Attraction vector                  
-                            SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
-                            nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
-                        }
 
-                    }
+                    //// ************* Obstacle Avoidance Code ******************
+                    nextWaypoint = obstacleAvoidance(nextWaypoint, currentLocation);
+                    // Everything is in meters and radians
+                    //if (Settings.UseVision)
+                    //{
+                    //    if (AvoidanceVector.magnitude > 0)
+                    //    {
+                    //        SumVector = new Vector2d(currentLocation, nextWaypoint);
+                    //        SumVector.magnitude /= SumVector.magnitude; //Normalize(Check if normalize is needed)
+                    //        SumVector.magnitude *= Alpha * MaxSpeed; // Influence(Check if maxspeed is needed)
+                    //        AvoidanceVector.angle = (AvoidanceVector.angle + 90 + Heading);// Make Lidar data relative to robot position 
+                    //        SumVector += AvoidanceVector; //combine Avoidance and Attraction vector                  
+                    //        SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
+                    //        nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
+                    //    }
+
+                    //}
 
                     /*if (Settings.DriveMode == DriveMode.Autonomous)
                     {
@@ -475,25 +477,7 @@ namespace NGCP.UGV
                     WaypointVector = new Vector2d(currentLocation, nextWaypoint);
                     NextWaypointDistance = WayPoint.GetDistance(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                     // ************* Obstacle Avoidance Code ******************
-                    // Everything is in meters and radians
-                    if (Settings.UseVision)
-                    {
-                        if (AvoidanceVector.magnitude > 0)
-                        {
-                            SumVector = new Vector2d(currentLocation, nextWaypoint);
-                            SumVector.magnitude /= SumVector.magnitude; //Normalize
-                            SumVector.magnitude *= 0.6; // Influence
-
-                            AvoidanceVector.magnitude /= AvoidanceVector.magnitude; //Normalize
-                            AvoidanceVector.magnitude *= 0.4; //Influence
-                            //SumVector -= AvoidanceVector;
-
-                            SumVector += AvoidanceVector;                   // changed from (-) --> (+)
-
-                            SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
-                            nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
-                        }
-                    }
+                    nextWaypoint = obstacleAvoidance(nextWaypoint, currentLocation);
 
                     NextWaypointBearing = WayPoint.GetBearing(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                     //calculate difference angle
@@ -622,21 +606,8 @@ namespace NGCP.UGV
                 WaypointVector = new Vector2d(currentLocation, nextWaypoint);
                 NextWaypointDistance = WayPoint.GetDistance(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                 // ************* Obstacle Avoidance Code ******************
-                // Everything is in meters and radians
-                if (Settings.UseVision)
-                {
-                    if (AvoidanceVector.magnitude > 0)
-                    {
-                        SumVector = new Vector2d(currentLocation, nextWaypoint);
-                        SumVector.magnitude /= SumVector.magnitude; //Normalize
-                        SumVector.magnitude *= 0.5; // Influence
-                        AvoidanceVector.magnitude /= AvoidanceVector.magnitude; //Normalize
-                        AvoidanceVector.magnitude *= 0.5; //Influence
-                        SumVector -= AvoidanceVector;
-                        SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
-                        nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
-                    }
-                }
+                nextWaypoint = obstacleAvoidance(nextWaypoint, currentLocation);
+
                 NextWaypointBearing = WayPoint.GetBearing(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                 //calculate difference angle
                 double errorWaypoint = NextWaypointBearing - Heading;
@@ -743,25 +714,7 @@ namespace NGCP.UGV
                 WaypointVector = new Vector2d(currentLocation, nextWaypoint);
                 NextWaypointDistance = WayPoint.GetDistance(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                 // ************* Obstacle Avoidance Code ******************
-                // Everything is in meters and radians
-                if (Settings.UseVision)
-                {
-                    if (AvoidanceVector.magnitude > 0)
-                    {
-                        SumVector = new Vector2d(currentLocation, nextWaypoint);
-                        SumVector.magnitude /= SumVector.magnitude; //Normalize
-                        SumVector.magnitude *= 0.6; // Influence
-
-                        AvoidanceVector.magnitude /= AvoidanceVector.magnitude; //Normalize
-                        AvoidanceVector.magnitude *= 0.4; //Influence
-                                                          //SumVector -= AvoidanceVector;
-
-                        SumVector += AvoidanceVector;                   // changed from (-) --> (+)
-
-                        SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
-                        nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
-                    }
-                }
+                nextWaypoint = obstacleAvoidance(nextWaypoint, currentLocation);
 
                 NextWaypointBearing = WayPoint.GetBearing(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                 //calculate difference angle
@@ -1118,26 +1071,7 @@ namespace NGCP.UGV
                 WaypointVector = new Vector2d(currentLocation, nextWaypoint);
                 NextWaypointDistance = WayPoint.GetDistance(this.Latitude, this.Longitude, nextWaypoint.Lat, nextWaypoint.Long);
                 // ************* Obstacle Avoidance Code ******************
-                // Everything is in meters and radians
-                if (Settings.UseVision)
-                {
-                    if (AvoidanceVector.magnitude > 0)
-                    {
-                        SumVector = new Vector2d(currentLocation, nextWaypoint);
-                        SumVector.magnitude /= SumVector.magnitude; //Normalize
-                        SumVector.magnitude *= 0.6; // Influence
-
-                        AvoidanceVector.magnitude /= AvoidanceVector.magnitude; //Normalize
-                        AvoidanceVector.magnitude *= 0.4; //Influence
-                                                          //SumVector -= AvoidanceVector;
-
-                        SumVector += AvoidanceVector;                   // changed from (-) --> (+)
-
-                        SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
-                        nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
-                    }
-
-                }
+                nextWaypoint = obstacleAvoidance(nextWaypoint, currentLocation);
 
                 /*if (Settings.DriveMode == DriveMode.Autonomous)
                 {
@@ -1244,6 +1178,34 @@ namespace NGCP.UGV
         }
         */
         #endregion
+
+
+        const double Alpha = 1.0;
+
+        /// <summary>
+        /// code for combining the obstacle avoidance vector with the waypoint vector
+        /// </summary>
+        WayPoint obstacleAvoidance(WayPoint nextWaypoint, WayPoint currentLocation)
+        {
+           
+            // Everything is in meters and radians
+            if (Settings.UseVision)
+            {
+                if (AvoidanceVector.magnitude > 0)
+                {
+                    SumVector = new Vector2d(currentLocation, nextWaypoint);
+                    SumVector.magnitude /= SumVector.magnitude; //Normalize(Check if normalize is needed)
+                    SumVector.magnitude *= Alpha; // Influence(Check if maxspeed is needed)
+                    AvoidanceVector.angle = (AvoidanceVector.angle + 90 + Heading);// Make Lidar data relative to robot position 
+                    SumVector += AvoidanceVector; //combine Avoidance and Attraction vector                  
+                    SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
+                    nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
+                }
+
+            }
+
+            return nextWaypoint;
+        }
 
         #endregion
     }
