@@ -13,8 +13,9 @@ namespace ObstacleDetection
         static void Main(string[] args)
         {
             const int GET_NUM = 10;
-            const int start_step = 0;
-            const int end_step = 1080;
+            // reduce start and end step to avoid detecting wheels
+            const int start_step = 100; // min 0
+            const int end_step = 880; // max 1080
 
             //UDP Information
             string receiver_ip = "127.0.0.1";
@@ -125,9 +126,9 @@ namespace ObstacleDetection
                     ObstacleDetector od = new ObstacleDetector(0, distances, maxDistance);
                     VectorSum vectorSum = od.getVectorSum();
 
-                    Console.WriteLine(vectorSum.getCount());
-                    Console.WriteLine(vectorSum.getAngle() * 180 / Math.PI);
-                    Console.WriteLine(vectorSum.getMagnitude());
+                    Console.Write("count: {0,10}",vectorSum.getCount());
+                    Console.Write("   Angle: {0,10}", vectorSum.getAngle() * 180 / Math.PI);
+                    Console.WriteLine("   Mag:   {0}", vectorSum.getMagnitude());
 
                     //Send objects to behavior
                     int msgSize = 2 * sizeof(double) + sizeof(int);

@@ -58,7 +58,7 @@ namespace UGV_Lidar_chart
 
             try
             {
-                string port_name = "COM9";
+                string port_name = "COM3";
                 int baudrate = 9600;
 
                 SerialPort urg = new SerialPort(port_name, baudrate);
