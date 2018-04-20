@@ -89,10 +89,6 @@
     <Reference Include="Microsoft.Maps.MapControl.WPF">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Bing Maps WPF Control\V1\Libraries\Microsoft.Maps.MapControl.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="NGCP.UGV, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\NGCP.UGV\bin\x64\Release\NGCP.UGV.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -116,6 +112,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Roboto_Arm.cs" />
+    <Compile Include="SystemState.cs" />
+    <Compile Include="UGV.Behavior.cs" />
+    <Compile Include="UGV.cs" />
+    <Compile Include="UGVState.cs" />
+    <Compile Include="VisionTarget.cs" />
+    <Compile Include="VisionWayPoint.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,7 +127,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CommProtocol.cs" />
     <Compile Include="ConsoleDisplay.cs" />
+    <Compile Include="DXL_Servo.cs" />
+    <Compile Include="dynamixel.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -133,6 +139,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MapControl.cs" />
+    <Compile Include="Payload.cs" />
+    <Compile Include="PID_Contoller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

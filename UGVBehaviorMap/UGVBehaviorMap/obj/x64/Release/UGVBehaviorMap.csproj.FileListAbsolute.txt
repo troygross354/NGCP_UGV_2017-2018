@@ -320,11 +320,9 @@ C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\UGVBehaviorMap.pdb
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\CommProtcolMessageStandard.dll
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\CommProtoCSharp.dll
-C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\NGCP.UGV.dll
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\UGV.Core.dll
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\CommProtcolMessageStandard.pdb
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\Microsoft.Maps.MapControl.WPF.xml
-C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\NGCP.UGV.pdb
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\bin\x64\Release\UGV.Core.pdb
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\obj\x64\Release\UGVBehaviorMap.csprojResolveAssemblyReference.cache
 C:\Users\Troy\Documents\GitHub\NGCP_UGV_2017-2018\UGVBehaviorMap\UGVBehaviorMap\obj\x64\Release\MainWindow.baml

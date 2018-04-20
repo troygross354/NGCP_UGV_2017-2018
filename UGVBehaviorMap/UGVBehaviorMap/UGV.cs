@@ -50,8 +50,16 @@ namespace NGCP.UGV
         /// <summary>
         /// Speed factor of front wheel driving from -1000 to 1000
         /// </summary>
-        public double LocalSpeed;
-
+        private double localSpeed;
+        public double LocalSpeed
+        {
+            get { return localSpeed; }
+            set
+            {
+                localSpeed = value;
+                SendControl();
+            }
+        }
         /// <summary>
         /// Steering factor of driving from -1000 to 1000
         /// </summary>
@@ -537,7 +545,7 @@ namespace NGCP.UGV
             StartWaypoint = new WayPoint(this.Latitude, this.Longitude, this.Altitude);
 
         }
-
+                       
         #endregion Constructor
 
         #region Public Methods
@@ -559,7 +567,7 @@ namespace NGCP.UGV
             else
             {
                 DebugMessage.Append("\nboardcastTimer is not enabled");
-            }
+            }      //test git
         }
 
         /// <summary>
@@ -919,7 +927,7 @@ namespace NGCP.UGV
             controlTimer.Interval = Settings.ControlRate;
             boardcastTimer.Interval = Settings.BoardCastRate;
             //start timers
-            controlTimer.Start();
+            //controlTimer.Start();
             boardcastTimer.Start();
             //start do work in a separate thread
             ThreadPool.QueueUserWorkItem(new WaitCallback(StartBehavior));
@@ -1047,13 +1055,13 @@ namespace NGCP.UGV
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
-        {
+        {   
             //controlTimer.Enabled = false;
-            Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
-            SendControl();
+            //Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+            //SendControl();
             //controlTimer.Enabled = true;
 
-            DebugMessage.Append("\ntest control timer: ");
+            //DebugMessage.Append("\ntest control timer: ");
         }
 
         /// <summary>
@@ -1072,8 +1080,8 @@ namespace NGCP.UGV
             else if (Settings.DriveMode == DriveMode.SemiAutonomous)
             {
                 //scale range input to outpur                
-                FinalFrontWheel = (LocalSpeed * 255.0 / 1000.0);
-                FinalRearWheel = (LocalSpeed * 255.0 / 1000.0);
+                FinalFrontWheel = (localSpeed * 255.0 / 1000.0);
+                FinalRearWheel = (localSpeed * 255.0 / 1000.0);
                 FinalSteering = (-Steering * 340 / 1000.0) + 2048; // changed from 100 to 340, from 512 to 2048
             }
             else if (Settings.DriveMode == DriveMode.Autonomous)
@@ -1086,8 +1094,8 @@ namespace NGCP.UGV
             else if (Settings.DriveMode == DriveMode.LocalControl)
             {
                 //scale range input to outpur
-                FinalFrontWheel = (LocalSpeed * 255.0 / 1000.0);
-                FinalRearWheel = (LocalSpeed * 255.0 / 1000.0);
+                FinalFrontWheel = (localSpeed * 255.0 / 1000.0);
+                FinalRearWheel = (localSpeed * 255.0 / 1000.0);
                 FinalSteering = (-LocalSteering * 340 / 1000.0) + 2048; // changed from 100 to 340, from 512 to 2048
             }
             //make sure vehicle is enabled
@@ -1154,6 +1162,11 @@ namespace NGCP.UGV
             //SteeringAngle = FinalSteering >= 0 ? SteeringAngle : (byte)(SteeringAngle + 128);
             //byte ReversedSteeringAngle = (byte)(SteeringAngle ^ 0x80);
             byte[] FrontWheelSpeedByte = Encoding.ASCII.GetBytes(FrontWheelSpeed.ToString());
+            List<byte> FrontWheelSpeedList = FrontWheelSpeedByte.ToList();
+            if (FrontWheelSpeedList.Count == 1)
+                FrontWheelSpeedList.Add(0x30);                     // add 0 in ascii
+
+
 
             #region old control packet
             /* old control
@@ -1182,19 +1195,8 @@ namespace NGCP.UGV
             //Construct Motor Package
             // #3
             byte checkSum =0x00;
-            byte[] _motorPackage = new byte[] {
-                0x01,                                   // Start of Transmission
-                0x41,                                   // ID of Device to be controlled (ALPHABETIC)
-                0x02,                                   // Start of Data (Parameters of Device)
-                0x30,           // direction  ASCII '1-forward' or '0-backward'
-                FrontWheelSpeedByte[0],           // MSB - speed 0x00-99
-                FrontWheelSpeedByte[1],           // LSB - speed 0x00-99
-                0x03,                                   // End of Data
-                0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
-                0x04                                    // End of Transmission
-            };
-            checkSum = (byte)(~(0x41 + FrontWheelSpeedByte[0] + FrontWheelSpeedByte[1]));
-            _motorPackage[7] = checkSum;
+            
+
             //Construct Servo Package
             // #4
             //byte[] _servoPackage = new byte[] {
@@ -1210,19 +1212,29 @@ namespace NGCP.UGV
             //};
 
             //put into serial package
-            byte[] MotorPackage = SerialPackage.Package(_motorPackage);
+            //byte[] MotorPackage = SerialPackage.Package(_motorPackage);
             //byte[] ServoPackage = SerialPackage.Package(_servoPackage);
             //send
             if (Settings.UseFPGA)
             {
+                byte[] _motorPackage = new byte[] {
+                0x01,                                   // Start of Transmission
+                0x41,                                   // ID of Device to be controlled (ALPHABETIC)
+                0x02,                                   // Start of Data (Parameters of Device)
+                0x30,           // direction  ASCII '1-forward' or '0-backward'
+                FrontWheelSpeedList[0],           // MSB - speed 0x00-99
+                FrontWheelSpeedList[1],           // LSB - speed 0x00-99
+                0x03,                                   // End of Data
+                0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
+                0x04                                    // End of Transmission
+                };
+
+                checkSum = (byte)(~(0x41 + 0x30 + FrontWheelSpeedList[0] + FrontWheelSpeedList[1]));
+
+                _motorPackage.SetValue(checkSum, 7);
                 fpga.Send(_motorPackage);
-                //fpga.Send(ServoPackage);      
             }
-            DebugMessage.Append("\ntest motor package: ");
-            foreach (var value in _motorPackage)
-            {
-                DebugMessage.Append(value);
-            }
+
         }
 #if USE_ABS
         bool RearLock = false;
