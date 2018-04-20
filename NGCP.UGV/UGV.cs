@@ -1,4 +1,4 @@
-﻿#define USE_ABS
+﻿//#define USE_ABS
 #define FPGA_Sensors
 using System;
 using System.Collections.Generic;
@@ -253,6 +253,9 @@ namespace NGCP.UGV
         // need to add this to the ugv for the ArmControlManual method
         private Int16 incomingChange = 0x0F;
         private int id_servo_GUI, val_servo_GUI = 0;
+
+        //debug properties
+        
         #endregion Public Properties
 
         #region Forwarding Data
@@ -528,7 +531,7 @@ namespace NGCP.UGV
             TargetFound = false;
             PayloadFound = false;
 
-
+               
         
             main_payload = new Payload();
             StartWaypoint = new WayPoint(this.Latitude, this.Longitude, this.Altitude);
@@ -538,6 +541,26 @@ namespace NGCP.UGV
         #endregion Constructor
 
         #region Public Methods
+        public void debugUGV()
+        {
+            DebugMessage.Clear();
+            if (controlTimer.Enabled == true)
+            {
+                DebugMessage.Append("\ncontrol timer is enabled");
+            }
+            else
+            {
+                DebugMessage.Append("\ncontrol timer is not enabled");            
+            }
+            if (boardcastTimer.Enabled == true)
+            {
+                DebugMessage.Append("\nboardcastTimer is enabled");
+            }
+            else
+            {
+                DebugMessage.Append("\nboardcastTimer is not enabled");
+            }
+        }
 
         /// <summary>
         /// Start opeartion of UGV
@@ -1025,10 +1048,12 @@ namespace NGCP.UGV
         /// <param name="e"></param>
         void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
         {
-            controlTimer.Enabled = false;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            //controlTimer.Enabled = false;
+            Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
             SendControl();
-            controlTimer.Enabled = true;
+            //controlTimer.Enabled = true;
+
+            DebugMessage.Append("\ntest control timer: ");
         }
 
         /// <summary>
@@ -1079,8 +1104,13 @@ namespace NGCP.UGV
                 FinalSteering = 0;
             }
 
+            // scale speed and control for microZed protocol
+            FinalFrontWheel = (FinalFrontWheel * 99.0) / 255.0;
+
+
+
             //prepare control
-            byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;
+            byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;          // 1=forward, 2=reverse
             byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)0x01 : (byte)0x02;
             RearWheelDirection = Math.Abs(FinalRearWheel) < Settings.DeadZone ? (byte)0x00 : RearWheelDirection;
             FrontWheelDirection = Math.Abs(FinalFrontWheel) < Settings.DeadZone ? (byte)0x00 : FrontWheelDirection;
@@ -1113,15 +1143,20 @@ namespace NGCP.UGV
                 }
             }
 #endif
-            byte RearWheelSpeed = (byte)Math.Abs(FinalRearWheel);
-            byte FrontWheelSpeed = (byte)Math.Abs(FinalFrontWheel);
-            RearWheelSpeed = (byte)(Math.Sqrt(RearWheelSpeed) * 16.0);
-            FrontWheelSpeed = (byte)(Math.Sqrt(FrontWheelSpeed) * 16.0);
+            //byte RearWheelSpeed = (byte)Math.Abs(FinalRearWheel);
+            //byte FrontWheelSpeed = (byte)Math.Abs(FinalFrontWheel);
+            int FrontWheelSpeed = (int)Math.Abs(FinalFrontWheel);
+            //RearWheelSpeed = (byte)(Math.Sqrt(RearWheelSpeed) * 16.0);
+            //FrontWheelSpeed = (byte)(Math.Sqrt(FrontWheelSpeed) * 16.0);
             byte[] SteeringAngle = BitConverter.GetBytes((Int16)FinalSteering);
-            byte[] ReverseSteeringAngle = BitConverter.GetBytes((Int16)(2048.0 - (FinalSteering - 2048.0))); //changed from 512 to 2048 for both values
+            //byte[] ReverseSteeringAngle = BitConverter.GetBytes((Int16)(2048.0 - (FinalSteering - 2048.0))); //changed from 512 to 2048 for both values
             //byte SteeringAngle = (byte)Math.Abs(FinalSteering);
             //SteeringAngle = FinalSteering >= 0 ? SteeringAngle : (byte)(SteeringAngle + 128);
             //byte ReversedSteeringAngle = (byte)(SteeringAngle ^ 0x80);
+            byte[] FrontWheelSpeedByte = Encoding.ASCII.GetBytes(FrontWheelSpeed.ToString());
+
+            #region old control packet
+            /* old control
             //Apply Control
             //Construct Motor Package
             // #3
@@ -1139,14 +1174,54 @@ namespace NGCP.UGV
                     111,                    111,                    111,                    111,
                     SteeringAngle[1],       SteeringAngle[0], ReverseSteeringAngle[1], ReverseSteeringAngle[0]        //oj - reversed byte order output
             };
+            */
+            #endregion old control packet
+
+            // new control
+            //Apply Control
+            //Construct Motor Package
+            // #3
+            byte checkSum =0x00;
+            byte[] _motorPackage = new byte[] {
+                0x01,                                   // Start of Transmission
+                0x41,                                   // ID of Device to be controlled (ALPHABETIC)
+                0x02,                                   // Start of Data (Parameters of Device)
+                0x30,           // direction  ASCII '1-forward' or '0-backward'
+                FrontWheelSpeedByte[0],           // MSB - speed 0x00-99
+                FrontWheelSpeedByte[1],           // LSB - speed 0x00-99
+                0x03,                                   // End of Data
+                0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
+                0x04                                    // End of Transmission
+            };
+            checkSum = (byte)(~(0x41 + FrontWheelSpeedByte[0] + FrontWheelSpeedByte[1]));
+            _motorPackage[7] = checkSum;
+            //Construct Servo Package
+            // #4
+            //byte[] _servoPackage = new byte[] {
+            //    0x01,                                   // Start of Transmission
+            //    0x42,                                   // ID of Device to be controlled (ALPHABETIC)
+            //    0x02,                                   // Start of Data (Parameters of Device)
+            //    0x49,           // direction  ASCII '1-forward' or '0-backward'
+            //    FrontWheelSpeedByte[0],           // MSB - speed 0x00-99
+            //    FrontWheelSpeedByte[1],           // LSB - speed 0x00-99
+            //    0x03,                                   // End of Data
+            //    0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
+            //    0x04                                    // End of Transmission
+            //};
+
             //put into serial package
             byte[] MotorPackage = SerialPackage.Package(_motorPackage);
-            byte[] ServoPackage = SerialPackage.Package(_servoPackage);
+            //byte[] ServoPackage = SerialPackage.Package(_servoPackage);
             //send
             if (Settings.UseFPGA)
             {
-                fpga.Send(MotorPackage);
-                fpga.Send(ServoPackage);
+                fpga.Send(_motorPackage);
+                //fpga.Send(ServoPackage);      
+            }
+            DebugMessage.Append("\ntest motor package: ");
+            foreach (var value in _motorPackage)
+            {
+                DebugMessage.Append(value);
             }
         }
 #if USE_ABS
@@ -1167,6 +1242,9 @@ namespace NGCP.UGV
             Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
             BoardCast();
             boardcastTimer.Enabled = true;
+            //DebugMessage.Clear();
+            //DebugMessage.Append("test boardcasetimer: " );
+            //fpga.Send(new byte[] { 0x00, 0x01, 0x02, 0x03, 0x99 });
         }
 
         int dividerCount = 0;
@@ -1210,6 +1288,7 @@ namespace NGCP.UGV
             }
             //inc
             dividerCount++;
+
         }
 
 #if FPGA_Sensors

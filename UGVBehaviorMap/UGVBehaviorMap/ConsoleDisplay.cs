@@ -429,6 +429,7 @@ namespace UGVBehaviorMap
             output.Append(String.Format("\nFinal: Speed {0, 7} Steer {1, 7} ", ugv.FinalFrontWheel, ugv.FinalSteering));
             //output.Append(String.Format("\nPayload X coor  {0, 7} Payload Y coor {1, 7} ", ugv.payloadx, ugv.payloady));
 
+            ugv.debugUGV();
             output.Append("\n--- Debug ---  " + ugv.DebugMessage);
             {
                 //locked on location
