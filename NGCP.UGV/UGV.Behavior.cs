@@ -341,8 +341,6 @@ namespace NGCP.UGV
             //    State = DriveState.GotoBall;
             //    return;
             //}
-            //double Alpha = 1;
-            //double MaxSpeed = 1; //not sure of effect of different sized vectors
             if (Waypoints.Count == 0 && usePathGen && !goToSafe)
             {
                 State = DriveState.GenerateSearchPath;
@@ -1182,22 +1180,30 @@ namespace NGCP.UGV
 
         const double Alpha = 1.0;
 
-        /// <summary>
-        /// code for combining the obstacle avoidance vector with the waypoint vector
-        /// </summary>
-        WayPoint obstacleAvoidance(WayPoint nextWaypoint, WayPoint currentLocation)
+      /// <summary>
+      /// code for combining the obstacle avoidance vector with the waypoint vector
+      /// </summary>
+      Vector2d temp = new Vector2d(0, 0); 
+      WayPoint obstacleAvoidance(WayPoint nextWaypoint, WayPoint currentLocation)
         {
-           
+          
             // Everything is in meters and radians
             if (Settings.UseVision)
             {
                 if (AvoidanceVector.magnitude > 0)
                 {
+                    //temp = AvoidanceVector;
                     SumVector = new Vector2d(currentLocation, nextWaypoint);
                     SumVector.magnitude /= SumVector.magnitude; //Normalize(Check if normalize is needed)
                     SumVector.magnitude *= Alpha; // Influence(Check if maxspeed is needed)
-                    AvoidanceVector.angle = (AvoidanceVector.angle + 90 + Heading);// Make Lidar data relative to robot position 
-                    SumVector += AvoidanceVector; //combine Avoidance and Attraction vector                  
+                    AvoidanceVector.angle = (AvoidanceVector.angle);// add heading + 90Make Lidar data relative to robot position
+                    DebugMessage.Clear();
+                    if (temp.angle < 0)
+                        temp.angle = temp.angle + 2*Math.PI;
+                    DebugMessage.Clear();
+                    DebugMessage.Append((AvoidanceVector.angle*180/Math.PI)+90); 
+                   // temp.angle = temp.angle % 2*Math.PI; 
+                    SumVector += temp; //combine Avoidance and Attraction vector                  
                     SumVector.magnitude = Math.Max(ReachWaypointZone + 1, SumVector.magnitude); //set the minimum vector length to 4 meters
                     nextWaypoint = WayPoint.Projection(currentLocation, SumVector.angle, SumVector.magnitude);
                 }

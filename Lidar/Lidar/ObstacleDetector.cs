@@ -18,9 +18,10 @@ namespace ObstacleDetection
 
         public ObstacleDetector(int startingStep, List<double> distanceList, double maxDistance)
         {
-            this.maxDistance = maxDistance;
+         //this.maxDistance = maxDistance; just doing a test change back if i forget
+            this.maxDistance = .3; //use code above 
             stepDistances = distanceList;
-            startStep = startingStep;
+            startStep = startingStep; // start step should be 140 End step should be 930
             vectors = new List<Vector2d>();
         }
 
@@ -78,13 +79,13 @@ namespace ObstacleDetection
                     {
                         RMagn = Beta * ((1 / (this.maxDistance + ClosestRange)) - 1 / (magnitude)) * ((1 / magnitude) * 1 / magnitude);
                         RVect[0] += RMagn * Math.Cos(angle);
-                        RVect[1] += RMagn * Math.Sin(angle);
+                        RVect[1] -= RMagn * Math.Sin(angle);
                     }
                     count++;
                 }
             }
             RMagn = Math.Sqrt(Math.Pow(RVect[0], 2) + Math.Pow(RVect[1], 2));
-            RAngle = Math.Atan2(RVect[1], RVect[0]) * 180 / Math.PI;
+            RAngle = (Math.Atan2(RVect[1], RVect[0]) * 180 / Math.PI) + 90;
             if(RAngle > 360)
             {
                 RAngle = RAngle - 360; 
@@ -93,7 +94,7 @@ namespace ObstacleDetection
             {
                 RAngle = RAngle + 360; 
             }
-            return new VectorSum(count,RAngle*Math.PI/180,RMagn);
+            return new VectorSum(count,(RAngle)*Math.PI/180,RMagn);
         }
 
         //Set the max distance in milimieters

@@ -14,8 +14,8 @@ namespace ObstacleDetection
         {
             const int GET_NUM = 10;
             // reduce start and end step to avoid detecting wheels
-            const int start_step = 100; // min 0
-            const int end_step = 880; // max 1080
+            const int start_step = 140; // min 0
+            const int end_step = 930; // max 1080
 
             //UDP Information
             string receiver_ip = "127.0.0.1";
@@ -24,7 +24,7 @@ namespace ObstacleDetection
 
             //Serial Information 
             int baudrate = 115200;
-            string port_name = "COM8";
+            string port_name = "COM4";
 
             //Distance Information
             double maxDistance = 5000;
