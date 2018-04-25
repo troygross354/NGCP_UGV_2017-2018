@@ -63,19 +63,53 @@ namespace NGCP.UGV
         /// <summary>
         /// Steering factor of driving from -1000 to 1000
         /// </summary>
-        public double LocalSteering;
+        private double localSteering;
+        public double LocalSteering
+        {
+            get { return localSteering; }
+            set
+            {
+                localSteering = value;
+                SendControl();
+            }
+        }
 
         #region Autonomous Related
 
         /// <summary>
         /// Speed factor of front wheel driving from -1000 to 1000
         /// </summary>
-        public double Speed { get; set; }
+        private double speed;
+        public double Speed
+        {
+            get { return speed; }
+            set
+            {
+                speed = value;
+                if(speed != lastSpeed)
+                    SendControl();
+                lastSpeed = speed;
+            }
+        }
+        private double lastSpeed;
 
         /// <summary>
         /// Steering factor of driving from -1000 to 1000
         /// </summary>
-        public double Steering { get; set; }
+        private double steering;
+        public double Steering
+        {
+            get { return steering; }
+            set
+            {
+                steering = value;
+                if(steering != lastSteering)
+                    SendControl();
+                lastSteering = steering;
+            }
+        }
+        private double lastSteering;
+
 
         #endregion Autonomous Related
 
@@ -1074,41 +1108,41 @@ namespace NGCP.UGV
             {
                 //scale range input to outpur
                 FinalFrontWheel = (CommWheel - 127.5) * 2.0;
-                FinalRearWheel = FinalFrontWheel;
+                //FinalRearWheel = FinalFrontWheel;
                 FinalSteering = (-CommSteering * 200 / 256.0) + 412;
             }
             else if (Settings.DriveMode == DriveMode.SemiAutonomous)
             {
                 //scale range input to outpur                
                 FinalFrontWheel = (localSpeed * 255.0 / 1000.0);
-                FinalRearWheel = (localSpeed * 255.0 / 1000.0);
-                FinalSteering = (-Steering * 340 / 1000.0) + 2048; // changed from 100 to 340, from 512 to 2048
+                //FinalRearWheel = (localSpeed * 255.0 / 1000.0);
+                FinalSteering = (-steering * 27.0 / 1000.0) + 27.0; // changed from 100 to 340, from 512 to 2048
             }
             else if (Settings.DriveMode == DriveMode.Autonomous)
             {
                 //scale range input to outpur
-                FinalFrontWheel = (Speed * 255.0 / 1000.0);
-                FinalRearWheel = (Speed * 255.0 / 1000.0);
-                FinalSteering = (-Steering * 340 / 1000.0) + 2048; // changed from 100 to 340, from 512 to 2048
+                FinalFrontWheel = (speed * 255.0 / 1000.0);
+                //FinalRearWheel = (Speed * 255.0 / 1000.0);
+                FinalSteering = (-steering * 27.0 / 1000.0) + 27.0; // changed from 100 to 340, from 512 to 2048
             }
             else if (Settings.DriveMode == DriveMode.LocalControl)
             {
                 //scale range input to outpur
                 FinalFrontWheel = (localSpeed * 255.0 / 1000.0);
-                FinalRearWheel = (localSpeed * 255.0 / 1000.0);
-                FinalSteering = (-LocalSteering * 340 / 1000.0) + 2048; // changed from 100 to 340, from 512 to 2048
+                //FinalRearWheel = (localSpeed * 255.0 / 1000.0);
+                FinalSteering = (-localSteering * 27.0 / 1000.0) + 27.0; // changed from 100 to 340, from 512 to 2048
             }
             //make sure vehicle is enabled
             if (Enabled)
             {
                 FinalFrontWheel = Math.Min(Math.Max(FinalFrontWheel, -255), 255);
-                FinalRearWheel = Math.Min(Math.Max(FinalRearWheel, -255), 255);
-                FinalSteering = Math.Min(Math.Max(FinalSteering, 1720), 2400); // changed from 412 to 1720, changed from 612 to 2400
+                //FinalRearWheel = Math.Min(Math.Max(FinalRearWheel, -255), 255);
+                FinalSteering = Math.Min(Math.Max(FinalSteering, 0), 54); // changed from 412 to 1720, changed from 612 to 2400
             }
             else
             {
                 FinalFrontWheel = 0;
-                FinalRearWheel = 0;
+                //FinalRearWheel = 0;
                 FinalSteering = 0;
             }
 
@@ -1118,10 +1152,10 @@ namespace NGCP.UGV
 
 
             //prepare control
-            byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;          // 1=forward, 2=reverse
-            byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)0x01 : (byte)0x02;
-            RearWheelDirection = Math.Abs(FinalRearWheel) < Settings.DeadZone ? (byte)0x00 : RearWheelDirection;
-            FrontWheelDirection = Math.Abs(FinalFrontWheel) < Settings.DeadZone ? (byte)0x00 : FrontWheelDirection;
+            //byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;          // 1=forward, 0=reverse
+            byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)'1' : (byte)'0';
+            //RearWheelDirection = Math.Abs(FinalRearWheel) < Settings.DeadZone ? (byte)0x00 : RearWheelDirection;
+            //FrontWheelDirection = Math.Abs(FinalFrontWheel) < Settings.DeadZone ? (byte)0x00 : FrontWheelDirection;
 #if USE_ABS
             if (this.Enabled)
             {
@@ -1154,17 +1188,28 @@ namespace NGCP.UGV
             //byte RearWheelSpeed = (byte)Math.Abs(FinalRearWheel);
             //byte FrontWheelSpeed = (byte)Math.Abs(FinalFrontWheel);
             int FrontWheelSpeed = (int)Math.Abs(FinalFrontWheel);
+            int Steering = (int)(FinalSteering * 10);
             //RearWheelSpeed = (byte)(Math.Sqrt(RearWheelSpeed) * 16.0);
             //FrontWheelSpeed = (byte)(Math.Sqrt(FrontWheelSpeed) * 16.0);
-            byte[] SteeringAngle = BitConverter.GetBytes((Int16)FinalSteering);
+            //byte[] SteeringAngle = BitConverter.GetBytes((Int16)FinalSteering);
             //byte[] ReverseSteeringAngle = BitConverter.GetBytes((Int16)(2048.0 - (FinalSteering - 2048.0))); //changed from 512 to 2048 for both values
             //byte SteeringAngle = (byte)Math.Abs(FinalSteering);
             //SteeringAngle = FinalSteering >= 0 ? SteeringAngle : (byte)(SteeringAngle + 128);
             //byte ReversedSteeringAngle = (byte)(SteeringAngle ^ 0x80);
             byte[] FrontWheelSpeedByte = Encoding.ASCII.GetBytes(FrontWheelSpeed.ToString());
-            List<byte> FrontWheelSpeedList = FrontWheelSpeedByte.ToList();
+            List<byte> FrontWheelSpeedList = FrontWheelSpeedByte.ToList();  //  MSB = index0,  LSB = index1,                  
             if (FrontWheelSpeedList.Count == 1)
-                FrontWheelSpeedList.Add(0x30);                     // add 0 in ascii
+                FrontWheelSpeedList.Insert(0,0x30);                     // add 0 in ascii to first item in list 
+
+            byte[] SteeringByte = Encoding.ASCII.GetBytes(Steering.ToString());
+            List<byte> SteeringList = SteeringByte.ToList();  //  MSB = index0,  LSB = index1,                  
+            if (SteeringList.Count == 2)
+                SteeringList.Insert(0, 0x30);                     // add 0 in ascii to first item in list 
+            else if (SteeringList.Count == 1)
+            {
+                SteeringList.Insert(0, 0x30);                     // add 0 in ascii to first item in list 
+                SteeringList.Insert(0, 0x30);                     // add 0 in ascii to first item in list 
+            }
 
 
 
@@ -1221,18 +1266,38 @@ namespace NGCP.UGV
                 0x01,                                   // Start of Transmission
                 0x41,                                   // ID of Device to be controlled (ALPHABETIC)
                 0x02,                                   // Start of Data (Parameters of Device)
-                0x30,           // direction  ASCII '1-forward' or '0-backward'
-                FrontWheelSpeedList[0],           // MSB - speed 0x00-99
-                FrontWheelSpeedList[1],           // LSB - speed 0x00-99
+                FrontWheelDirection,           // direction  ASCII '1-forward' or '0-backward'
+                FrontWheelSpeedList[0],           // MSB - speed 0x-9x
+                FrontWheelSpeedList[1],           // LSB - speed x0-x9
                 0x03,                                   // End of Data
                 0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
                 0x04                                    // End of Transmission
                 };
 
-                checkSum = (byte)(~(0x41 + 0x30 + FrontWheelSpeedList[0] + FrontWheelSpeedList[1]));
+                checkSum = (byte)(~(0x41 + FrontWheelDirection + FrontWheelSpeedList[0] + FrontWheelSpeedList[1]));
 
                 _motorPackage.SetValue(checkSum, 7);
+                
+
+
+                byte[] _servoPackage = new byte[] {
+                0x01,                                   // Start of Transmission
+                0x42,                                   // ID of Device to be controlled (ALPHABETIC)
+                0x02,                                   // Start of Data (Parameters of Device)
+                SteeringList[0],                        // MSB - speed -ex:5
+                SteeringList[1],                        // --- - speed -ex:4
+                SteeringList[2],                        // LSB - speed -ex:.0
+                0x03,                                   // End of Data
+                0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
+                0x04                                    // End of Transmission
+                };
+
+                checkSum = (byte)(~(0x41 + SteeringList[0] + SteeringList[1] + SteeringList[2]));
+
+                _servoPackage.SetValue(checkSum, 7);
+
                 fpga.Send(_motorPackage);
+                fpga.Send(_servoPackage);
             }
 
         }
