@@ -182,9 +182,9 @@ namespace UGVBehaviorMap
             }
 
 #region Waypoint and Boundary Definition
-            UGV.Core.Navigation.WayPoint WaypointA = new UGV.Core.Navigation.WayPoint(34.059298, -117.821791,0);
-            UGV.Core.Navigation.WayPoint WaypointB = new UGV.Core.Navigation.WayPoint(34.059326, -117.822056,0);
-            UGV.Core.Navigation.WayPoint WaypointC = new UGV.Core.Navigation.WayPoint(34.059212, -117.821988,0);
+            UGV.Core.Navigation.WayPoint WaypointA = new UGV.Core.Navigation.WayPoint(34.0588093, -117.8216925,0);
+            UGV.Core.Navigation.WayPoint WaypointB = new UGV.Core.Navigation.WayPoint(34.0590510, -117.8219402,0);
+            UGV.Core.Navigation.WayPoint WaypointC = new UGV.Core.Navigation.WayPoint(34.0594426, -117.8220626,0);
 
             //UGV.Core.Navigation.WayPoint WaypointB = new UGV.Core.Navigation.WayPoint(34.0590760, -117.8213999, 0);
             /*   UGV.Core.Navigation.WayPoint WaypointC = new UGV.Core.Navigation.WayPoint(34.0590225, -117.8216451, 0);
@@ -193,8 +193,9 @@ namespace UGVBehaviorMap
 
             ugv.Waypoints.Enqueue(WaypointA);
             
-            //ugv.Waypoints.Enqueue(WaypointB);
-            //ugv.Waypoints.Enqueue(WaypointC);
+            ugv.Waypoints.Enqueue(WaypointB);
+            ugv.Waypoints.Enqueue(WaypointC);
+
             ////ugv.Waypoints.Enqueue(WaypointD);
             //ugv.TargetWaypoint = WaypointC;
 

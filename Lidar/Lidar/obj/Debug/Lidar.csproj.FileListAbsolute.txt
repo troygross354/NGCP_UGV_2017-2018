@@ -31,3 +31,9 @@ C:\Users\Troy\Downloads\UGV Software 2016-2017 Archive\Lidar\Lidar\obj\Debug\Lid
 C:\Users\Troy\Downloads\UGV Software 2016-2017 Archive\Lidar\Lidar\bin\Debug\Lidar.exe
 C:\Users\Troy\Downloads\UGV Software 2016-2017 Archive\Lidar\Lidar\bin\Debug\Lidar.pdb
 C:\Users\Troy\Downloads\UGV Software 2016-2017 Archive\Lidar\Lidar\obj\Debug\Lidar.csprojResolveAssemblyReference.cache
+C:\Users\UGV\Documents\GitHub\NGCP_UGV_2017-2018\Lidar\Lidar\bin\Debug\Lidar.exe.config
+C:\Users\UGV\Documents\GitHub\NGCP_UGV_2017-2018\Lidar\Lidar\bin\Debug\Lidar.exe
+C:\Users\UGV\Documents\GitHub\NGCP_UGV_2017-2018\Lidar\Lidar\bin\Debug\Lidar.pdb
+C:\Users\UGV\Documents\GitHub\NGCP_UGV_2017-2018\Lidar\Lidar\obj\Debug\Lidar.csprojResolveAssemblyReference.cache
+C:\Users\UGV\Documents\GitHub\NGCP_UGV_2017-2018\Lidar\Lidar\obj\Debug\Lidar.exe
+C:\Users\UGV\Documents\GitHub\NGCP_UGV_2017-2018\Lidar\Lidar\obj\Debug\Lidar.pdb
