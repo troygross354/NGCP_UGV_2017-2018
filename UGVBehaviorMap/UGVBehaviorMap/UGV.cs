@@ -587,6 +587,8 @@ namespace NGCP.UGV
 
             #endregion FPGA Connection
 
+
+            #region Nav Connection
             /*
             * open connection to Gnav, 
             * if Gnav not found use old GPS/IMU setup
@@ -595,6 +597,7 @@ namespace NGCP.UGV
             * GNavs gps port
             */
 
+            
             Nav = new Serial(Settings.NavPort, Settings.NavBaud);
             Nav.EscapeToken = new byte[0];
             Nav.PackageMode = Serial.PackageModes.UseFunction;
@@ -624,7 +627,7 @@ namespace NGCP.UGV
 
             if (Settings.UseNav)
                 Nav.Start();
-
+            #endregion Nav Connection
 
             #region Encoders Connection
 
@@ -696,7 +699,7 @@ namespace NGCP.UGV
             ////start
             //if (Settings.UseArduino)
             //    arduino.Start();
-            
+
             #endregion IMU Connection
 
 #if oldGPS
