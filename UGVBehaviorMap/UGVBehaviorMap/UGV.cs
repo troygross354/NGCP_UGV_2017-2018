@@ -1108,41 +1108,35 @@ namespace NGCP.UGV
             {
                 //scale range input to outpur
                 FinalFrontWheel = (CommWheel - 127.5) * 2.0;
-                //FinalRearWheel = FinalFrontWheel;
                 FinalSteering = (-CommSteering * 200 / 256.0) + 412;
             }
             else if (Settings.DriveMode == DriveMode.SemiAutonomous)
             {
                 //scale range input to outpur                
                 FinalFrontWheel = (localSpeed * 255.0 / 1000.0);
-                //FinalRearWheel = (localSpeed * 255.0 / 1000.0);
                 FinalSteering = (-steering * 27.0 / 1000.0) + 27.0; // changed from 100 to 340, from 512 to 2048
             }
             else if (Settings.DriveMode == DriveMode.Autonomous)
             {
                 //scale range input to outpur
                 FinalFrontWheel = (speed * 255.0 / 1000.0);
-                //FinalRearWheel = (Speed * 255.0 / 1000.0);
                 FinalSteering = (-steering * 27.0 / 1000.0) + 27.0; // changed from 100 to 340, from 512 to 2048
             }
             else if (Settings.DriveMode == DriveMode.LocalControl)
             {
                 //scale range input to outpur
                 FinalFrontWheel = (localSpeed * 255.0 / 1000.0);
-                //FinalRearWheel = (localSpeed * 255.0 / 1000.0);
                 FinalSteering = (-localSteering * 27.0 / 1000.0) + 27.0; // changed from 100 to 340, from 512 to 2048
             }
             //make sure vehicle is enabled
             if (Enabled)
             {
                 FinalFrontWheel = Math.Min(Math.Max(FinalFrontWheel, -255), 255);
-                //FinalRearWheel = Math.Min(Math.Max(FinalRearWheel, -255), 255);
                 FinalSteering = Math.Min(Math.Max(FinalSteering, 0), 54); // changed from 412 to 1720, changed from 612 to 2400
             }
             else
             {
                 FinalFrontWheel = 0;
-                //FinalRearWheel = 0;
                 FinalSteering = 0;
             }
 
@@ -1152,7 +1146,6 @@ namespace NGCP.UGV
 
 
             //prepare control
-            //byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;          // 1=forward, 0=reverse
             byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)'1' : (byte)'0';
             //RearWheelDirection = Math.Abs(FinalRearWheel) < Settings.DeadZone ? (byte)0x00 : RearWheelDirection;
             //FrontWheelDirection = Math.Abs(FinalFrontWheel) < Settings.DeadZone ? (byte)0x00 : FrontWheelDirection;
@@ -1185,17 +1178,10 @@ namespace NGCP.UGV
                 }
             }
 #endif
-            //byte RearWheelSpeed = (byte)Math.Abs(FinalRearWheel);
-            //byte FrontWheelSpeed = (byte)Math.Abs(FinalFrontWheel);
+
             int FrontWheelSpeed = (int)Math.Abs(FinalFrontWheel);
             int Steering = (int)(FinalSteering * 10);
-            //RearWheelSpeed = (byte)(Math.Sqrt(RearWheelSpeed) * 16.0);
-            //FrontWheelSpeed = (byte)(Math.Sqrt(FrontWheelSpeed) * 16.0);
-            //byte[] SteeringAngle = BitConverter.GetBytes((Int16)FinalSteering);
-            //byte[] ReverseSteeringAngle = BitConverter.GetBytes((Int16)(2048.0 - (FinalSteering - 2048.0))); //changed from 512 to 2048 for both values
-            //byte SteeringAngle = (byte)Math.Abs(FinalSteering);
-            //SteeringAngle = FinalSteering >= 0 ? SteeringAngle : (byte)(SteeringAngle + 128);
-            //byte ReversedSteeringAngle = (byte)(SteeringAngle ^ 0x80);
+
             byte[] FrontWheelSpeedByte = Encoding.ASCII.GetBytes(FrontWheelSpeed.ToString());
             List<byte> FrontWheelSpeedList = FrontWheelSpeedByte.ToList();  //  MSB = index0,  LSB = index1,                  
             if (FrontWheelSpeedList.Count == 1)
@@ -1278,8 +1264,6 @@ namespace NGCP.UGV
 
                 _motorPackage.SetValue(checkSum, 7);
                 
-
-
                 byte[] _servoPackage = new byte[] {
                 0x01,                                   // Start of Transmission
                 0x42,                                   // ID of Device to be controlled (ALPHABETIC)
@@ -1292,7 +1276,7 @@ namespace NGCP.UGV
                 0x04                                    // End of Transmission
                 };
 
-                checkSum = (byte)(~(0x41 + SteeringList[0] + SteeringList[1] + SteeringList[2]));
+                checkSum = (byte)(~(0x42 + SteeringList[0] + SteeringList[1] + SteeringList[2]));
 
                 _servoPackage.SetValue(checkSum, 7);
 
@@ -1319,9 +1303,7 @@ namespace NGCP.UGV
             Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
             BoardCast();
             boardcastTimer.Enabled = true;
-            //DebugMessage.Clear();
-            //DebugMessage.Append("test boardcasetimer: " );
-            //fpga.Send(new byte[] { 0x00, 0x01, 0x02, 0x03, 0x99 });
+
         }
 
         int dividerCount = 0;
