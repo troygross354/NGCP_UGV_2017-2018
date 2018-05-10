@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpDX.XInput;
+using UGV.Core.IO;
+using System.Threading;
 
 namespace RoboticArm_XBoxController_GUI
 {
@@ -23,12 +25,12 @@ namespace RoboticArm_XBoxController_GUI
         /// <summary>
         /// The connected Xbox One controller. All properties are updated with in one of its methods.
         /// </summary>
-        private XInputController xb1c;
+        //private XInputController xb1c;
 
         /// <summary>
         /// The id values for each of the servos. These are to be sent to the vehicle so it can know which one to write to.
         /// </summary>
-        private const Int16 base_id = 11, shoulder_id = 12, elbow_id = 13, gripper_id = 14;
+        private const byte turretServo_id = 0x45, armX_id = 0x44, armY_id = 0x43, gripper_id = 0x46;
 
         /// <summary>
         /// The normalized value read from the controller. This should be multiplied by a gain, depending on each servo, and stored in a separtely to be sent.
@@ -38,35 +40,42 @@ namespace RoboticArm_XBoxController_GUI
         /// Elbow : Right joystick, Y-direction
         /// Gripper : Right joystick, X-direction
         /// </summary>
-        private int base_val, shoulder_val, elbow_val, gripper_val;
+        private int turretServo, armX, armY; 
+        private bool gripper;
 
-        /// <summary>
-        /// Gain values calculated
-        /// </summary>
-        private int g_base, g_shoulder, g_elbow, g_gripper;
 
-        private void trackBar_elbow_ValueChanged(object sender, EventArgs e)
+
+        private void trackBar_armX_ValueChanged(object sender, EventArgs e)
         {
-            // send a packet to the UGV with the updated change values
-            SendArmData(0x0F, elbow_id, trackBar_elbow.Value);
+            // send a packet to the UGV with the updated change 
+            SendArmControl(armX, armY, turretServo, (bool)gripper);
         }
 
-        private void trackBar_gripper_ValueChanged(object sender, EventArgs e)
+
+        private void radioButton_retracted_CheckedChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change values
-            SendArmData(0x0F, gripper_id, trackBar_gripper.Value);
+            gripper = false;
+            SendArmControl(armX, armY, turretServo, (bool)gripper);
         }
 
         private void trackBar_shoulder_ValueChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change values
-            SendArmData(0x0F, shoulder_id, trackBar_shoulder.Value);
+            SendArmControl(armX, armY, turretServo, (bool)gripper);
+        }
+
+        private void radioButton_closed_CheckedChanged(object sender, EventArgs e)
+        {
+            // send a packet to the UGV with the updated change values
+            gripper = true;
+            SendArmControl(armX, armY, turretServo, (bool)gripper);
         }
 
         private void trackBar_base_ValueChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change values
-            SendArmData(0x0F, base_id, trackBar_base.Value);
+            SendArmControl(armX, armY, turretServo, (bool)gripper);
         }
 
         /// <summary>
@@ -78,19 +87,22 @@ namespace RoboticArm_XBoxController_GUI
         {
             InitializeComponent();
 
-            // start a new instance of the xbox one controller
-            xb1c = new XInputController();
-
-            // if there is a connection then update the current values
-            if (xb1c.connected)
+            //construct fpga
+            Serial fpga = new Serial("COM7", 9600);  // use 9600 for FPGA, use 57600
+            fpga.PackageMode = Serial.PackageModes.UseFPGA;       // for FPGA
+            //define callback
+            fpga.PackageReceived = (bytes =>
             {
-                base_val = xb1c.leftThumb.X;
-                shoulder_val = xb1c.leftThumb.Y;
-                elbow_val = xb1c.rightThumb.Y;
-                gripper_val = xb1c.rightThumb.X;
-            }
-            else
-                MessageBox.Show(this,"The Xbox One controller did not connect properly.\n","Warning", MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                Console.WriteLine("package length: {0}", bytes.Length);
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    Console.WriteLine("byte {0}: {1}", i, (char)bytes[i]);
+                }
+                Console.WriteLine("\n");
+            });
+            //start                
+            fpga.Start();
 
             // set timer event to start reading and updating from the controller
             timer1.Start();
@@ -103,89 +115,48 @@ namespace RoboticArm_XBoxController_GUI
         /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
         {
-            // update the values read from the xbox one controller
-            xb1c.Update();
-            UpdateControllerValues();
-            // Calclulate the gain based on the positoin of each joystick
-            CalculateGains();
-            // Update slide bar values to reflect the changes that were sent
-            UpdateTrackBars();
+
+
         }
 
-        private void UpdateControllerValues()
+
+
+        //private void CalculateGains()
+        //{
+        //    // update class properties
+        //    turretServo = xb1c.leftThumb.X;
+        //    armX = xb1c.leftThumb.Y;
+        //    armY = xb1c.rightThumb.Y;
+        //    gripper = xb1c.rightThumb.X;
+
+        //    // determine gains
+        //    g_base = (int)(Math.Abs(turretServo) > Xthreshold ? 2.0 * turretServo : 0);
+        //    g_shoulder = (int)(Math.Abs(armX) > Ythreshold ? 2.0 * armX : 0);
+        //    g_elbow = (int)(Math.Abs(armY) > Ythreshold ? 2.5 * armY : 0);
+        //    g_gripper = (int)(Math.Abs(gripper) > Xthreshold ? 4.0 * gripper : 0);
+        //}
+
+
+        void SendArmControl(int armX, int armY, int turretServo, bool gripper)
         {
-            // Left Joystick values
-            lbl_LJSx.Text = String.Format("X: {0}", xb1c.leftThumb.X);
-            lbl_LJSy.Text = String.Format("Y: {0}", xb1c.leftThumb.Y);
+            byte[] _motorPackage = new byte[] {
+                0x01,                                   // Start of Transmission
+                0x41,                                   // ID of Device to be controlled (ALPHABETIC)
+                0x02,                                   // Start of Data (Parameters of Device)
+                FrontWheelDirection,           // direction  ASCII '1-forward' or '0-backward'
+                FrontWheelSpeedList[0],           // MSB - speed 0x-9x
+                FrontWheelSpeedList[1],           // LSB - speed x0-x9
+                0x03,                                   // End of Data
+                0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
+                0x04                                    // End of Transmission
+                };
 
-            // Right Joystick values
-            lbl_RJSx.Text = String.Format("X: {0}", xb1c.rightThumb.X);
-            lbl_RJSy.Text = String.Format("Y: {0}", xb1c.rightThumb.Y);
+            checkSum = (byte)(~(0x41 + FrontWheelDirection + FrontWheelSpeedList[0] + FrontWheelSpeedList[1]));
 
-            // Controller connection status
-            lbl_ControlConnect.Text = String.Format("Controller Connected: {0}", xb1c.connected ? "True" : "False");
-        }
+            _motorPackage.SetValue(checkSum, 7);
 
-        private void CalculateGains()
-        {
-            // update class properties
-            base_val = xb1c.leftThumb.X;
-            shoulder_val = xb1c.leftThumb.Y;
-            elbow_val = xb1c.rightThumb.Y;
-            gripper_val = xb1c.rightThumb.X;
 
-            // determine gains
-            g_base = (int)(Math.Abs(base_val) > Xthreshold ? 2.0 * base_val : 0);
-            g_shoulder = (int)(Math.Abs(shoulder_val) > Ythreshold ? 2.0 * shoulder_val : 0);
-            g_elbow = (int)(Math.Abs(elbow_val) > Ythreshold ? 2.5 * elbow_val : 0);
-            g_gripper = (int)(Math.Abs(gripper_val) > Xthreshold ? 4.0 * gripper_val : 0);
-        }
-
-        private void UpdateTrackBars()
-        {
-            // if there is a gian calculation then update the track bar. check to see if the new slide bar value would exceed 
-            // the defined max and min of the slide bar
-            if(g_base != 0)
-            {
-                if (trackBar_base.Value + g_base > trackBar_base.Maximum)
-                    trackBar_base.Value = trackBar_base.Maximum;
-                else if (trackBar_base.Value + g_base < trackBar_base.Minimum)
-                    trackBar_base.Value = trackBar_base.Minimum;
-                else
-                    trackBar_base.Value += g_base;
-            }
-            if (g_shoulder != 0)
-            {
-                if (trackBar_shoulder.Value + g_shoulder > trackBar_shoulder.Maximum)
-                    trackBar_shoulder.Value = trackBar_shoulder.Maximum;
-                else if (trackBar_shoulder.Value + g_shoulder < trackBar_shoulder.Minimum)
-                    trackBar_shoulder.Value = trackBar_shoulder.Minimum;
-                else
-                    trackBar_shoulder.Value += g_shoulder;
-            }
-            if (g_elbow != 0)
-            {
-                if (trackBar_elbow.Value + g_elbow > trackBar_elbow.Maximum)
-                    trackBar_elbow.Value = trackBar_elbow.Maximum;
-                else if (trackBar_elbow.Value + g_elbow < trackBar_elbow.Minimum)
-                    trackBar_elbow.Value = trackBar_elbow.Minimum;
-                else
-                    trackBar_elbow.Value += g_elbow;
-            }
-            if (g_gripper != 0)
-            {
-                if (trackBar_gripper.Value + g_gripper > trackBar_gripper.Maximum)
-                    trackBar_gripper.Value = trackBar_gripper.Maximum;
-                else if (trackBar_gripper.Value + g_gripper < trackBar_gripper.Minimum)
-                    trackBar_gripper.Value = trackBar_gripper.Minimum;
-                else
-                    trackBar_gripper.Value += g_gripper;
-            }
-        }
-
-        private void SendArmData(Int16 headerInfo, int id_param, int position_param)
-        {
-
+            fpga.Send(_motorPackage);
         }
     }
 }       

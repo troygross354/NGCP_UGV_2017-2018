@@ -47,7 +47,11 @@ namespace UGV.Core.IO
             /// <summary>
             /// Use FindPackageEnd Function to extract the package
             /// </summary>
-            UseFunction
+            UseFunction,
+            /// <summary>
+            /// true if recieving FPGA data, false if not
+            /// </summary>
+            UseFPGA
         }
 
         /// <summary>
@@ -179,34 +183,69 @@ namespace UGV.Core.IO
                     message.RemoveAt(0);
                 //find package end
                 int loc = -1;
-                if (PackageMode == PackageModes.UseEscapeToken)
+                if (PackageMode == PackageModes.UseFPGA)
                 {
-                    //if eof detected
-                    loc = message.IndexOfSeq<byte>(EscapeToken);
-
-                }
-                else if (PackageMode == PackageModes.UseFunction)
-                {
-                    //if eof detected
-                    loc = FindPackageEnd(message.ToArray());
-                }
-                //notify package if found
-                if (loc > -1)
-                {
-                    //fetch package
-                    byte[] package = new byte[loc];
-                    try
+                    // if first byte is start of header
+                    if (message[0] == (byte)0x01)
                     {
-                        for (int i = 0; i < loc; i++)
-                            package[i] = message[i];
-                        //take off read package
-                        message.RemoveRange(0, loc + EscapeToken.Length);
-                        //do action of package received
-                        if (PackageReceived != null)
-                            PackageReceived(package);
-                        count++;
+                        // find eof
+                        loc = message.IndexOf(0x04);
+                        // if eof detected
+                        if (loc > 0)
+                        {
+                            //fetch package
+
+                            byte[] package = new byte[loc + 1];
+                            try
+                            {
+                                int messageLength = loc + 1;
+                                for (int i = 0; i < messageLength; i++)
+                                    package[i] = message[i];
+                                //take off read package
+                                message.RemoveRange(0, messageLength);
+                                //do action of package received
+                                if (PackageReceived != null)
+                                    PackageReceived(package);
+                                count++;
+                            }
+                            catch (IndexOutOfRangeException) { }
+                        }
+
+
                     }
-                    catch (IndexOutOfRangeException) { }
+                }
+                // else if not using FPGA
+                else
+                {
+                    if (PackageMode == PackageModes.UseEscapeToken)
+                    {
+                        //if eof detected
+                        loc = message.IndexOfSeq<byte>(EscapeToken);
+
+                    }
+                    else if (PackageMode == PackageModes.UseFunction)
+                    {
+                        //if eof detected
+                        loc = FindPackageEnd(message.ToArray());
+                    }
+                    //notify package if found
+                    if (loc > -1)
+                    {
+                        //fetch package
+                        byte[] package = new byte[loc];
+                        try
+                        {
+                            for (int i = 0; i < loc; i++)
+                                package[i] = message[i];
+                            //take off read package
+                            message.RemoveRange(0, loc + EscapeToken.Length);
+                            //do action of package received
+                            if (PackageReceived != null)
+                                PackageReceived(package);
+                            count++;
+                        }
+                        catch (IndexOutOfRangeException) { }
+                    }
                 }
             }
         }

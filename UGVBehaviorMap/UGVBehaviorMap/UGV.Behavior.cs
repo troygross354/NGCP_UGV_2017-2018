@@ -683,11 +683,13 @@ namespace NGCP.UGV
         private List<WayPoint> spiralPath_Payload = new List<WayPoint>();
         private int turret_Payload_Position = 0;
 
+
         void SearchPayload()
         {
+           /* 
             WayPoint nextWaypoint = null;
 
-            arm_ugv.ArmSearchPosition();
+            //arm_ugv.ArmSearchPosition();
 
             if (PayloadFound)
             {
@@ -810,17 +812,20 @@ namespace NGCP.UGV
                 State = DriveState.Idle;
             }
 
+           
             //State = DriveState.Idle;
-            /*if (!StartWaiting)
+            if (!StartWaiting)
             {
                 StartTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
                 StartWaiting = true;
             }
             CurrentTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             if (CurrentTime - StartTime > WaitTime)
-                State = DriveState.DriveToStart;*/
+                State = DriveState.DriveToStart; 
 
+            
 
+            */
         }
 
         // modified generate search path behaivor
@@ -1214,12 +1219,14 @@ namespace NGCP.UGV
         /// </summary>
         public void GrabPayloadManual()
         {
+            /*
             if (incomingChange == 0xFF)
             {
                 // grabbing payload with arm has finished 
                 // change state to retract payload and go back to start location
                 State = DriveState.Idle;        // should add a state to retract the payload or handle while in current state
             }
+            */
         }
 
         #endregion

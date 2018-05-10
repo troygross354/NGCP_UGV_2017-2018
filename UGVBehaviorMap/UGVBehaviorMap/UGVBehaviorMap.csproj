@@ -112,7 +112,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Roboto_Arm.cs" />
     <Compile Include="SystemState.cs" />
     <Compile Include="UGV.Behavior.cs" />
     <Compile Include="UGV.cs" />
@@ -129,8 +128,6 @@
     </Compile>
     <Compile Include="CommProtocol.cs" />
     <Compile Include="ConsoleDisplay.cs" />
-    <Compile Include="DXL_Servo.cs" />
-    <Compile Include="dynamixel.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

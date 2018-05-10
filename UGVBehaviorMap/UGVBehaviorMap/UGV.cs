@@ -274,10 +274,7 @@ namespace NGCP.UGV
         public int RightClicks;
         public double TargetDistance;
         public double TargetAngle;
-        /// <summary>
-        /// Robotic Arm mounted on top of UGV with 4 degrees of freedom
-        /// </summary>
-        public Roboto_Arm arm_ugv;
+
         /// <summary>
         /// This is the tri colored payload arm is supposed to retrieve
         /// </summary>
@@ -287,14 +284,7 @@ namespace NGCP.UGV
         public int x_mainpayload = 0;
         public int y_mainpayload = 0;
 
-        // arm properties
-        public const Int16 Base_ID = 11;
-        public const Int16 Shoulder_ID = 12;
-        public const Int16 Elbow_ID = 13;
-        public const Int16 Gripper_ID = 14;
-        // need to add this to the ugv for the ArmControlManual method
-        private Int16 incomingChange = 0x0F;
-        private int id_servo_GUI, val_servo_GUI = 0;
+
 
         //debug properties
         
@@ -510,28 +500,28 @@ namespace NGCP.UGV
             //@TODO ARM
             //int servoPosition = ac.id;
             //int servoValue = ac.position;
-            id_servo_GUI = ac.id;
-            val_servo_GUI = ac.position;
+            //id_servo_GUI = ac.id;
+            //val_servo_GUI = ac.position;
 
-            //// this method 
-            switch (id_servo_GUI)
-            {
-                case Base_ID:
-                    arm_ugv.Base.Move_To(val_servo_GUI);
-                    break;
-                case Shoulder_ID:
-                    arm_ugv.Shoulder.Move_To(val_servo_GUI);
-                    break;
-                case Elbow_ID:
-                    arm_ugv.Elbow.Move_To(val_servo_GUI);
-                    break;
-                case Gripper_ID:
-                    arm_ugv.Gripper.Move_To(val_servo_GUI);
-                    break;
-                default:
-                    // write to none of the servos, the id written was not recognized
-                    break;
-             }
+            ////// this method 
+            //switch (id_servo_GUI)
+            //{
+            //    case Base_ID:
+            //        arm_ugv.Base.Move_To(val_servo_GUI);
+            //        break;
+            //    case Shoulder_ID:
+            //        arm_ugv.Shoulder.Move_To(val_servo_GUI);
+            //        break;
+            //    case Elbow_ID:
+            //        arm_ugv.Elbow.Move_To(val_servo_GUI);
+            //        break;
+            //    case Gripper_ID:
+            //        arm_ugv.Gripper.Move_To(val_servo_GUI);
+            //        break;
+            //    default:
+            //        // write to none of the servos, the id written was not recognized
+            //        break;
+            // }
                     return (Int32)(Comnet.CallBackCodes.CALLBACK_SUCCESS | Comnet.CallBackCodes.CALLBACK_DESTROY_PACKET);
         }
 
@@ -899,9 +889,9 @@ namespace NGCP.UGV
 
             #region Robotic Arm Connection
             // instantiate the arm
-            arm_ugv = new Roboto_Arm(Settings.ArmPort, Settings.ArmBaud);
-            if (Settings.UseArm)
-                arm_ugv.StartArm();
+            //arm_ugv = new Roboto_Arm(Settings.ArmPort, Settings.ArmBaud);
+            //if (Settings.UseArm)
+            //    arm_ugv.StartArm();
 
             #endregion Robotic Arm Connection
 
@@ -1093,9 +1083,7 @@ namespace NGCP.UGV
             //controlTimer.Enabled = false;
             //Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
             //SendControl();
-            //controlTimer.Enabled = true;
-
-            //DebugMessage.Append("\ntest control timer: ");
+            //controlTimer.Enabled = true; 
         }
 
         /// <summary>
@@ -1146,17 +1134,17 @@ namespace NGCP.UGV
 
 
             //prepare control
-<<<<<<< HEAD
             byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)'1' : (byte)'0';
-=======
-            //byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;          // 1=forward, 0=reverse
-            byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)'0' : (byte)'1';
->>>>>>> c95417d77c5a4d8b32f3b10d42ce40d1033e7209
             //RearWheelDirection = Math.Abs(FinalRearWheel) < Settings.DeadZone ? (byte)0x00 : RearWheelDirection;
             //FrontWheelDirection = Math.Abs(FinalFrontWheel) < Settings.DeadZone ? (byte)0x00 : FrontWheelDirection;
 #if USE_ABS
             if (this.Enabled)
             {
+                bool RearLock = false;
+                bool FrontLock = false;
+                byte FrontLockCount = 0;
+                byte RearLockCount = 0;
+                const byte CycleTimeout = 2;
                 RearWheelDirection = FinalRearWheel == 0 ? (byte)0x03 : RearWheelDirection;
                 FrontWheelDirection = FinalFrontWheel == 0 ? (byte)0x03 : FrontWheelDirection;
                 if (RearWheelDirection == (byte)0x03)
@@ -1185,19 +1173,8 @@ namespace NGCP.UGV
 #endif
 
             int FrontWheelSpeed = (int)Math.Abs(FinalFrontWheel);
-<<<<<<< HEAD
             int Steering = (int)(FinalSteering * 10);
 
-=======
-            int Steering = (int)(FinalSteering);
-            //RearWheelSpeed = (byte)(Math.Sqrt(RearWheelSpeed) * 16.0);
-            //FrontWheelSpeed = (byte)(Math.Sqrt(FrontWheelSpeed) * 16.0);
-            //byte[] SteeringAngle = BitConverter.GetBytes((Int16)FinalSteering);
-            //byte[] ReverseSteeringAngle = BitConverter.GetBytes((Int16)(2048.0 - (FinalSteering - 2048.0))); //changed from 512 to 2048 for both values
-            //byte SteeringAngle = (byte)Math.Abs(FinalSteering);
-            //SteeringAngle = FinalSteering >= 0 ? SteeringAngle : (byte)(SteeringAngle + 128);
-            //byte ReversedSteeringAngle = (byte)(SteeringAngle ^ 0x80);
->>>>>>> c95417d77c5a4d8b32f3b10d42ce40d1033e7209
             byte[] FrontWheelSpeedByte = Encoding.ASCII.GetBytes(FrontWheelSpeed.ToString());
             List<byte> FrontWheelSpeedList = FrontWheelSpeedByte.ToList();  //  MSB = index0,  LSB = index1,                  
             if (FrontWheelSpeedList.Count == 1)
@@ -1283,13 +1260,15 @@ namespace NGCP.UGV
             }
 
         }
-#if USE_ABS
-        bool RearLock = false;
-        bool FrontLock = false;
-        byte FrontLockCount = 0;
-        byte RearLockCount = 0;
-        const byte CycleTimeout = 2;
-#endif
+
+        /// <summary>
+        /// Sequencial action to send control values to arm
+        /// </summary>
+        void SendArmControl(int armX, int armY, int turretServo, bool gripper)
+        {
+
+        }
+
         /// <summary>
         /// EventHandler when boardcast timer tick
         /// </summary>
@@ -1337,10 +1316,10 @@ namespace NGCP.UGV
                     //int position2 = 0;
                     //int position3 = 0;
                     //int position4 = 0;
-                    byte UGV_ARM_CONTROLER = 100;//define some where else should be changed to a settings value michael wallace 5/12/2017
+                    //byte UGV_ARM_CONTROLER = 100;//define some where else should be changed to a settings value michael wallace 5/12/2017
                     //commProtocol.SendArmPosition(position1, position2, position3, position4, UGV_ARM_CONTROLER);
                     // sending the Base, Shoulder, Elbow, and Gripper present positions
-                    commProtocol.SendArmPosition(arm_ugv.Base.dxl_present_position, arm_ugv.Shoulder.dxl_present_position, arm_ugv.Elbow.dxl_present_position, arm_ugv.Gripper.dxl_present_position, UGV_ARM_CONTROLER);
+                    //commProtocol.SendArmPosition(arm_ugv.Base.dxl_present_position, arm_ugv.Shoulder.dxl_present_position, arm_ugv.Elbow.dxl_present_position, arm_ugv.Gripper.dxl_present_position, UGV_ARM_CONTROLER);
                 }
             }
             //inc
