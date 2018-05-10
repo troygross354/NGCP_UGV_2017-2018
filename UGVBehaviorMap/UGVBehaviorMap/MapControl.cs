@@ -226,7 +226,7 @@ namespace UGVBehaviorMap
         public void DefineHeading(WayPoint CurrentLocation, double Bearing, double size)
         {
             // Front Waypoint
-            /*var frontWP = WayPoint.Projection(CurrentLocation, Bearing, 3.0 * size);
+            var frontWP = WayPoint.Projection(CurrentLocation, Bearing, 3.0 * size);
             //var rightWP = WayPoint.Projection(CurrentLocation, Bearing + Math.PI / 2.0, size);
             //var backWP = WayPoint.Projection(CurrentLocation, Bearing + Math.PI, size);
             //var leftWP = WayPoint.Projection(CurrentLocation, Bearing - Math.PI / 2.0, size);
@@ -234,7 +234,7 @@ namespace UGVBehaviorMap
             BingMap.Children.Remove(BearingLine);
             //draw new bearing line
             BearingLine = new MapPolyline();
-            BearingLine.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Purple);
+            BearingLine.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
             BearingLine.StrokeThickness = 2;
             BearingLine.Opacity = 0.7;
             BearingLine.Locations = new LocationCollection();
@@ -244,7 +244,7 @@ namespace UGVBehaviorMap
             //BearingLine.Locations.Add(new Location(backWP.Lat, backWP.Long));
             //BearingLine.Locations.Add(new Location(leftWP.Lat, leftWP.Long));
             //BearingLine.Locations.Add(new Location(frontWP.Lat, frontWP.Long));
-            BingMap.Children.Add(BearingLine);*/
+            BingMap.Children.Add(BearingLine);
 
             if (ConsoleDisplay.ugv.Settings.UseVision)
             {

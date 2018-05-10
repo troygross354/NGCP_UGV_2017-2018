@@ -1146,7 +1146,12 @@ namespace NGCP.UGV
 
 
             //prepare control
+<<<<<<< HEAD
             byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)'1' : (byte)'0';
+=======
+            //byte RearWheelDirection = FinalRearWheel >= 0 ? (byte)0x01 : (byte)0x02;          // 1=forward, 0=reverse
+            byte FrontWheelDirection = FinalFrontWheel >= 0 ? (byte)'0' : (byte)'1';
+>>>>>>> c95417d77c5a4d8b32f3b10d42ce40d1033e7209
             //RearWheelDirection = Math.Abs(FinalRearWheel) < Settings.DeadZone ? (byte)0x00 : RearWheelDirection;
             //FrontWheelDirection = Math.Abs(FinalFrontWheel) < Settings.DeadZone ? (byte)0x00 : FrontWheelDirection;
 #if USE_ABS
@@ -1180,8 +1185,19 @@ namespace NGCP.UGV
 #endif
 
             int FrontWheelSpeed = (int)Math.Abs(FinalFrontWheel);
+<<<<<<< HEAD
             int Steering = (int)(FinalSteering * 10);
 
+=======
+            int Steering = (int)(FinalSteering);
+            //RearWheelSpeed = (byte)(Math.Sqrt(RearWheelSpeed) * 16.0);
+            //FrontWheelSpeed = (byte)(Math.Sqrt(FrontWheelSpeed) * 16.0);
+            //byte[] SteeringAngle = BitConverter.GetBytes((Int16)FinalSteering);
+            //byte[] ReverseSteeringAngle = BitConverter.GetBytes((Int16)(2048.0 - (FinalSteering - 2048.0))); //changed from 512 to 2048 for both values
+            //byte SteeringAngle = (byte)Math.Abs(FinalSteering);
+            //SteeringAngle = FinalSteering >= 0 ? SteeringAngle : (byte)(SteeringAngle + 128);
+            //byte ReversedSteeringAngle = (byte)(SteeringAngle ^ 0x80);
+>>>>>>> c95417d77c5a4d8b32f3b10d42ce40d1033e7209
             byte[] FrontWheelSpeedByte = Encoding.ASCII.GetBytes(FrontWheelSpeed.ToString());
             List<byte> FrontWheelSpeedList = FrontWheelSpeedByte.ToList();  //  MSB = index0,  LSB = index1,                  
             if (FrontWheelSpeedList.Count == 1)
@@ -1227,24 +1243,6 @@ namespace NGCP.UGV
             // #3
             byte checkSum =0x00;
             
-
-            //Construct Servo Package
-            // #4
-            //byte[] _servoPackage = new byte[] {
-            //    0x01,                                   // Start of Transmission
-            //    0x42,                                   // ID of Device to be controlled (ALPHABETIC)
-            //    0x02,                                   // Start of Data (Parameters of Device)
-            //    0x49,           // direction  ASCII '1-forward' or '0-backward'
-            //    FrontWheelSpeedByte[0],           // MSB - speed 0x00-99
-            //    FrontWheelSpeedByte[1],           // LSB - speed 0x00-99
-            //    0x03,                                   // End of Data
-            //    0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
-            //    0x04                                    // End of Transmission
-            //};
-
-            //put into serial package
-            //byte[] MotorPackage = SerialPackage.Package(_motorPackage);
-            //byte[] ServoPackage = SerialPackage.Package(_servoPackage);
             //send
             if (Settings.UseFPGA)
             {
