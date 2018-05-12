@@ -434,8 +434,7 @@
             // 
             this.trackBar_gimbalX.Location = new System.Drawing.Point(800, 248);
             this.trackBar_gimbalX.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.trackBar_gimbalX.Maximum = 90;
-            this.trackBar_gimbalX.Minimum = -90;
+            this.trackBar_gimbalX.Maximum = 360;
             this.trackBar_gimbalX.Name = "trackBar_gimbalX";
             this.trackBar_gimbalX.Size = new System.Drawing.Size(295, 69);
             this.trackBar_gimbalX.SmallChange = 5;
@@ -446,8 +445,7 @@
             // 
             this.trackBar_gimbalY.Location = new System.Drawing.Point(800, 359);
             this.trackBar_gimbalY.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.trackBar_gimbalY.Maximum = 30;
-            this.trackBar_gimbalY.Minimum = -30;
+            this.trackBar_gimbalY.Maximum = 100;
             this.trackBar_gimbalY.Name = "trackBar_gimbalY";
             this.trackBar_gimbalY.Size = new System.Drawing.Size(295, 69);
             this.trackBar_gimbalY.SmallChange = 5;
