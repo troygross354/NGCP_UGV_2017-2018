@@ -191,7 +191,7 @@ namespace UGV.Core.IO
                         // find eof
                         loc = message.IndexOf(0x04);
                         // if eof detected
-                        if (loc >= 8)
+                        if (loc > 0)
                         {
                             //fetch package
                             if (message.Count == 9)
@@ -211,7 +211,7 @@ namespace UGV.Core.IO
                                 }
                                 catch (IndexOutOfRangeException) { }
                             }
-                            else message.Clear();
+                            else if(loc != -1) message.Clear();
 
                         }
 
