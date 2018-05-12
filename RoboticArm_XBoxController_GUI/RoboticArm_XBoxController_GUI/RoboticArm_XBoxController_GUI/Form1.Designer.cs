@@ -402,7 +402,7 @@
             this.radioButton_retracted.TabStop = true;
             this.radioButton_retracted.Text = "Retracted";
             this.radioButton_retracted.UseVisualStyleBackColor = true;
-            this.radioButton_retracted.CheckedChanged += new System.EventHandler(this.radioButton_retracted_CheckedChanged);
+            this.radioButton_retracted.Click += new System.EventHandler(this.radioButton_retracted_Click);
             // 
             // radioButton_closed
             // 
@@ -415,7 +415,7 @@
             this.radioButton_closed.TabStop = true;
             this.radioButton_closed.Text = "Closed";
             this.radioButton_closed.UseVisualStyleBackColor = true;
-            this.radioButton_closed.CheckedChanged += new System.EventHandler(this.radioButton_closed_CheckedChanged);
+            this.radioButton_closed.Click += new System.EventHandler(this.radioButton_closed_Click);
             // 
             // groupBox_GripperServo
             // 

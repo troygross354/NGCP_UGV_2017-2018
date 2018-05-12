@@ -52,22 +52,6 @@ namespace RoboticArm_XBoxController_GUI
             SendArmControl(armX, armY, turretServo, gripper,gimbalX,gimbalY,armReset);
         }
 
-
-        private void radioButton_retracted_CheckedChanged(object sender, EventArgs e)
-        {
-            // send a packet to the UGV with the updated change values
-            gripper = false;
-            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
-        }
-
-
-        private void radioButton_closed_CheckedChanged(object sender, EventArgs e)
-        {
-            // send a packet to the UGV with the updated change values
-            gripper = true;
-            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
-        }
-
         private void trackBar_base_ValueChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change values
@@ -106,6 +90,19 @@ namespace RoboticArm_XBoxController_GUI
         {
             LidarRecieve();
         }
+
+        private void radioButton_retracted_Click(object sender, EventArgs e)
+        {
+            gripper = false;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
+        }
+
+        private void radioButton_closed_Click(object sender, EventArgs e)
+        {
+            gripper = true;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
+        }
+
 
 
         /// <summary>
