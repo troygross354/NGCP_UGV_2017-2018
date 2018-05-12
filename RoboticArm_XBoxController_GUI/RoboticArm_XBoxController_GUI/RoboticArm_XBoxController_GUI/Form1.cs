@@ -102,6 +102,11 @@ namespace RoboticArm_XBoxController_GUI
             SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset); 
         }
 
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            LidarRecieve();
+        }
+
 
         /// <summary>
         /// The defined value each joystick coordinate must be passed in order to write any gain values.
@@ -128,10 +133,14 @@ namespace RoboticArm_XBoxController_GUI
                 switch (bytes[1])
                 {
                     case 0x50:
+                        int temp = 0;
                         int MSB = bytes[3] - 0x30;
                         int SB =  bytes[4] - 0x30;
                         int LSB = bytes[5] - 0x30;
-                        LidarDistance = BitConverter.ToInt32(new byte[] { 0x00, (byte)MSB, (byte) SB, (byte)LSB }, 0);
+                        temp += LSB;
+                        temp += SB * 10;
+                        temp += MSB * 100;
+                        LidarDistance = temp;  
                         lblShoulder_pp.Text = LidarDistance.ToString();
                         break;
 
@@ -373,6 +382,25 @@ namespace RoboticArm_XBoxController_GUI
             int RobotArmDistance = (int)Math.Sqrt(xCoord * xCoord + yCoord * yCoord);
             int[] Array = { RobotArmHeight, RobotArmAngle, RobotArmDistance };
             return Array; 
+        }
+        void LidarRecieve()
+        {
+            byte checkSum = 0x00; 
+            byte[] _LidarRecievePackage = new byte[] {
+                0x01,                                   // Start of Transmission
+                0x51,                                   // ID of Device to be controlled (ALPHABETIC)
+                0x02,                                   // Start of Data (Parameters of Device)
+                0x00,           // MSB Digit in Milimeters  
+                0x00,           // Second Digit in Milimeters  ###### Check ORDER!!
+                0x00,           // LSB Third Digit in Milimeters
+                0x03,                                   // End of Data
+                0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
+                0x04                                    // End of Transmission
+                };
+
+            checkSum = unchecked ((byte)(~(0x51)));
+            _LidarRecievePackage.SetValue(checkSum, 7);
+            fpga.Send(_LidarRecievePackage);
         }
     }
 }       

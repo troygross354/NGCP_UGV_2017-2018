@@ -66,6 +66,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.Reset = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -483,11 +484,22 @@
             this.Reset.UseVisualStyleBackColor = true;
             this.Reset.Click += new System.EventHandler(this.button1_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(670, 436);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(101, 47);
+            this.button1.TabIndex = 58;
+            this.button1.Text = "Lidar Data";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1108, 498);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.Reset);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -575,6 +587,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button Reset;
+        private System.Windows.Forms.Button button1;
     }
 }
 
