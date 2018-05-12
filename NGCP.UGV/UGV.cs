@@ -533,6 +533,8 @@ namespace NGCP.UGV
                     break;
              }
                     return (Int32)(Comnet.CallBackCodes.CALLBACK_SUCCESS | Comnet.CallBackCodes.CALLBACK_DESTROY_PACKET);
+
+
         }
 
 
@@ -930,6 +932,7 @@ namespace NGCP.UGV
                         return;
                     CommWheel = bytes[1];
                     CommSteering = bytes[2];
+                    DebugMessage.Append(CommWheel);
                 });
                 //start                
                 Xbee.Start();

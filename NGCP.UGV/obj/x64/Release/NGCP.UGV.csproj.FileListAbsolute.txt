@@ -26,3 +26,11 @@ C:\Users\Andy\Desktop\Arm\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.c
 C:\Users\Andy\Desktop\Arm\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.csproj.CopyComplete
 C:\Users\Andy\Desktop\Arm\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.dll
 C:\Users\Andy\Desktop\Arm\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.pdb
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\NGCP.UGV.dll
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\NGCP.UGV.pdb
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\UGV.Core.dll
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\CommProtcolMessageStandard.pdb
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\bin\x64\Release\UGV.Core.pdb
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.csprojResolveAssemblyReference.cache
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.dll
+C:\Users\epowertheif\Documents\GitHub\NGCP_UGV_2017-2018\NGCP.UGV\obj\x64\Release\NGCP.UGV.pdb
