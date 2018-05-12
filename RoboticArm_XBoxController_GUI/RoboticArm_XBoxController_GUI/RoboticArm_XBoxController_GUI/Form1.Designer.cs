@@ -61,6 +61,11 @@
             this.radioButton_retracted = new System.Windows.Forms.RadioButton();
             this.radioButton_closed = new System.Windows.Forms.RadioButton();
             this.groupBox_GripperServo = new System.Windows.Forms.GroupBox();
+            this.trackBar_gimbalX = new System.Windows.Forms.TrackBar();
+            this.trackBar_gimbalY = new System.Windows.Forms.TrackBar();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Reset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -70,6 +75,8 @@
             this.groupBox1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox_GripperServo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalY)).BeginInit();
             this.SuspendLayout();
             // 
             // timer1
@@ -82,9 +89,9 @@
             this.label15.Location = new System.Drawing.Point(709, 66);
             this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(27, 20);
+            this.label15.Size = new System.Drawing.Size(36, 20);
             this.label15.TabIndex = 44;
-            this.label15.Text = "90";
+            this.label15.Text = "120";
             // 
             // label17
             // 
@@ -92,9 +99,9 @@
             this.label17.Location = new System.Drawing.Point(340, 66);
             this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(32, 20);
+            this.label17.Size = new System.Drawing.Size(41, 20);
             this.label17.TabIndex = 43;
-            this.label17.Text = "-90";
+            this.label17.Text = "-120";
             // 
             // label20
             // 
@@ -110,13 +117,12 @@
             // 
             this.trackBar_base.Location = new System.Drawing.Point(382, 46);
             this.trackBar_base.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.trackBar_base.Maximum = 3700;
-            this.trackBar_base.Minimum = 700;
+            this.trackBar_base.Maximum = 120;
+            this.trackBar_base.Minimum = -120;
             this.trackBar_base.Name = "trackBar_base";
             this.trackBar_base.Size = new System.Drawing.Size(318, 69);
-            this.trackBar_base.SmallChange = 100;
+            this.trackBar_base.SmallChange = 5;
             this.trackBar_base.TabIndex = 41;
-            this.trackBar_base.Value = 2200;
             this.trackBar_base.ValueChanged += new System.EventHandler(this.trackBar_base_ValueChanged);
             // 
             // label7
@@ -154,19 +160,17 @@
             // 
             this.trackBar_ArmY.Location = new System.Drawing.Point(382, 171);
             this.trackBar_ArmY.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.trackBar_ArmY.Maximum = 3700;
-            this.trackBar_ArmY.Minimum = 700;
+            this.trackBar_ArmY.Maximum = 203;
             this.trackBar_ArmY.Name = "trackBar_ArmY";
             this.trackBar_ArmY.Size = new System.Drawing.Size(318, 69);
-            this.trackBar_ArmY.SmallChange = 100;
+            this.trackBar_ArmY.SmallChange = 5;
             this.trackBar_ArmY.TabIndex = 37;
-            this.trackBar_ArmY.Value = 2200;
-            this.trackBar_ArmY.ValueChanged += new System.EventHandler(this.trackBar_shoulder_ValueChanged);
+            this.trackBar_ArmY.ValueChanged += new System.EventHandler(this.trackBar_ArmY_ValueChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(295, 322);
+            this.label5.Location = new System.Drawing.Point(709, 322);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(77, 20);
@@ -177,7 +181,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(709, 322);
+            this.label3.Location = new System.Drawing.Point(292, 322);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(80, 20);
@@ -196,15 +200,13 @@
             // 
             // trackBar_armX
             // 
-            this.trackBar_armX.Location = new System.Drawing.Point(382, 299);
+            this.trackBar_armX.Location = new System.Drawing.Point(383, 300);
             this.trackBar_armX.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.trackBar_armX.Maximum = 3700;
-            this.trackBar_armX.Minimum = 700;
+            this.trackBar_armX.Maximum = 120;
             this.trackBar_armX.Name = "trackBar_armX";
             this.trackBar_armX.Size = new System.Drawing.Size(318, 69);
-            this.trackBar_armX.SmallChange = 100;
+            this.trackBar_armX.SmallChange = 5;
             this.trackBar_armX.TabIndex = 33;
-            this.trackBar_armX.Value = 2200;
             this.trackBar_armX.ValueChanged += new System.EventHandler(this.trackBar_armX_ValueChanged);
             // 
             // groupBox4
@@ -262,7 +264,6 @@
             this.lblShoulder_pp.Size = new System.Drawing.Size(24, 20);
             this.lblShoulder_pp.TabIndex = 3;
             this.lblShoulder_pp.Text = "---";
-            this.lblShoulder_pp.Click += new System.EventHandler(this.lblShoulder_pp_Click);
             // 
             // label12
             // 
@@ -428,11 +429,70 @@
             this.groupBox_GripperServo.TabStop = false;
             this.groupBox_GripperServo.Text = "Gripper Servo";
             // 
+            // trackBar_gimbalX
+            // 
+            this.trackBar_gimbalX.Location = new System.Drawing.Point(800, 248);
+            this.trackBar_gimbalX.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.trackBar_gimbalX.Maximum = 90;
+            this.trackBar_gimbalX.Minimum = -90;
+            this.trackBar_gimbalX.Name = "trackBar_gimbalX";
+            this.trackBar_gimbalX.Size = new System.Drawing.Size(295, 69);
+            this.trackBar_gimbalX.SmallChange = 5;
+            this.trackBar_gimbalX.TabIndex = 53;
+            this.trackBar_gimbalX.ValueChanged += new System.EventHandler(this.trackBar_gimbalX_ValueChanged);
+            // 
+            // trackBar_gimbalY
+            // 
+            this.trackBar_gimbalY.Location = new System.Drawing.Point(800, 359);
+            this.trackBar_gimbalY.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.trackBar_gimbalY.Maximum = 30;
+            this.trackBar_gimbalY.Minimum = -30;
+            this.trackBar_gimbalY.Name = "trackBar_gimbalY";
+            this.trackBar_gimbalY.Size = new System.Drawing.Size(295, 69);
+            this.trackBar_gimbalY.SmallChange = 5;
+            this.trackBar_gimbalY.TabIndex = 54;
+            this.trackBar_gimbalY.ValueChanged += new System.EventHandler(this.trackBar_gimbalY_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(897, 334);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 20);
+            this.label1.TabIndex = 55;
+            this.label1.Text = "GimbalY";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(897, 220);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(70, 20);
+            this.label2.TabIndex = 56;
+            this.label2.Text = "GimbalX";
+            // 
+            // Reset
+            // 
+            this.Reset.Location = new System.Drawing.Point(912, 436);
+            this.Reset.Name = "Reset";
+            this.Reset.Size = new System.Drawing.Size(75, 47);
+            this.Reset.TabIndex = 57;
+            this.Reset.Text = "Reset";
+            this.Reset.UseVisualStyleBackColor = true;
+            this.Reset.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1108, 498);
+            this.Controls.Add(this.Reset);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.trackBar_gimbalY);
+            this.Controls.Add(this.trackBar_gimbalX);
             this.Controls.Add(this.groupBox_GripperServo);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox1);
@@ -469,6 +529,8 @@
             this.groupBox5.PerformLayout();
             this.groupBox_GripperServo.ResumeLayout(false);
             this.groupBox_GripperServo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalY)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -508,6 +570,11 @@
         private System.Windows.Forms.RadioButton radioButton_retracted;
         private System.Windows.Forms.RadioButton radioButton_closed;
         private System.Windows.Forms.GroupBox groupBox_GripperServo;
+        private System.Windows.Forms.TrackBar trackBar_gimbalY;
+        private System.Windows.Forms.TrackBar trackBar_gimbalX;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button Reset;
     }
 }
 

@@ -40,15 +40,16 @@ namespace RoboticArm_XBoxController_GUI
         /// Elbow : Right joystick, Y-direction
         /// Gripper : Right joystick, X-direction
         /// </summary>
-        private int turretServo, armX, armY; 
-        private bool gripper;
+        private int turretServo, armX, armY,gimbalX,gimbalY; 
+        private bool gripper,armReset;
 
 
 
         private void trackBar_armX_ValueChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change 
-            //SendArmControl(armX, armY, turretServo, (bool)gripper);
+            armX = trackBar_armX.Value;
+            SendArmControl(armX, armY, turretServo, gripper,gimbalX,gimbalY,armReset);
         }
 
 
@@ -56,40 +57,59 @@ namespace RoboticArm_XBoxController_GUI
         {
             // send a packet to the UGV with the updated change values
             gripper = false;
-           // SendArmControl(armX, armY, turretServo, (bool)gripper);
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
         }
 
-        private void trackBar_shoulder_ValueChanged(object sender, EventArgs e)
-        {
-            // send a packet to the UGV with the updated change values
-            //SendArmControl(armX, armY, turretServo, (bool)gripper);
-        }
 
         private void radioButton_closed_CheckedChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change values
             gripper = true;
-            //SendArmControl(armX, armY, turretServo, (bool)gripper);
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
         }
 
         private void trackBar_base_ValueChanged(object sender, EventArgs e)
         {
             // send a packet to the UGV with the updated change values
-            //SendArmControl(armX, armY, turretServo, (bool)gripper);
+            turretServo = trackBar_base.Value;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
         }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            armReset = true;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
+            armReset = false; 
+        }
+
+
+        private void trackBar_gimbalX_ValueChanged(object sender, EventArgs e)
+        {
+            gimbalX = trackBar_gimbalX.Value;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
+        }
+
+        private void trackBar_ArmY_ValueChanged(object sender, EventArgs e)
+        {
+            armY = trackBar_ArmY.Value;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset);
+        }
+
+        private void trackBar_gimbalY_ValueChanged(object sender, EventArgs e)
+        {
+            gimbalY = trackBar_gimbalY.Value;
+            SendArmControl(armX, armY, turretServo, gripper, gimbalX, gimbalY, armReset); 
+        }
+
 
         /// <summary>
         /// The defined value each joystick coordinate must be passed in order to write any gain values.
         /// </summary>
         private const int Xthreshold = 30, Ythreshold = 30;
 
-        private void lblShoulder_pp_Click(object sender, EventArgs e)
-        {
-
-        }
-
         int LidarDistance;
-        Serial fpga = new Serial("COM16", 9600);  // use 9600 for FPGA, use 57600
+        Serial fpga = new Serial("COM8", 9600);  // use 9600 for FPGA, use 57600
         public Form1()
         {
             InitializeComponent();
