@@ -82,13 +82,13 @@ namespace RoboticArm_XBoxController_GUI
         /// The defined value each joystick coordinate must be passed in order to write any gain values.
         /// </summary>
         private const int Xthreshold = 30, Ythreshold = 30;
+        Serial fpga = new Serial("COM7", 9600);  // use 9600 for FPGA, use 57600
 
         public Form1()
         {
             InitializeComponent();
 
             //construct fpga
-            Serial fpga = new Serial("COM7", 9600);  // use 9600 for FPGA, use 57600
             fpga.PackageMode = Serial.PackageModes.UseFPGA;       // for FPGA
             //define callback
             fpga.PackageReceived = (bytes =>
@@ -143,17 +143,17 @@ namespace RoboticArm_XBoxController_GUI
                 0x01,                                   // Start of Transmission
                 0x41,                                   // ID of Device to be controlled (ALPHABETIC)
                 0x02,                                   // Start of Data (Parameters of Device)
-                FrontWheelDirection,           // direction  ASCII '1-forward' or '0-backward'
-                FrontWheelSpeedList[0],           // MSB - speed 0x-9x
-                FrontWheelSpeedList[1],           // LSB - speed x0-x9
+                0x00,           // direction  ASCII '1-forward' or '0-backward'
+                0x00,           // MSB - speed 0x-9x
+                0x00,           // LSB - speed x0-x9
                 0x03,                                   // End of Data
                 0x00,                                   // Checksum = ~(ID + DATA) 1 BYTE!
                 0x04                                    // End of Transmission
                 };
 
-            checkSum = (byte)(~(0x41 + FrontWheelDirection + FrontWheelSpeedList[0] + FrontWheelSpeedList[1]));
+            //checkSum = (byte)(~(0x41 + FrontWheelDirection + FrontWheelSpeedList[0] + FrontWheelSpeedList[1]));
 
-            _motorPackage.SetValue(checkSum, 7);
+            //_motorPackage.SetValue(checkSum, 7);
 
 
             fpga.Send(_motorPackage);

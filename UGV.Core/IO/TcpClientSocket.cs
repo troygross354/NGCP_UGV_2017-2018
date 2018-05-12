@@ -83,7 +83,7 @@ namespace UGV.Core.IO
             // Connect to a remote device.
             try
             {
-                // Find out the local endpoint for the socket.
+                // Find out the local endpoint for the socket.                                                                 
                 //IPHostEntry ipHostInfo = Dns.Resolve(Host);
                 IPAddress ipAddress = IpAddress;// ipHostInfo.AddressList[0];
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, Port);
