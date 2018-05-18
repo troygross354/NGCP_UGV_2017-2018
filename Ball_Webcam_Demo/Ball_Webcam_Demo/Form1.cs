@@ -39,6 +39,13 @@ namespace Ball_Webcam_Demo
         private MCvScalar upperBoundBlue;
         private MCvScalar lowerBoundYellow;
         private MCvScalar upperBoundYellow;
+        private int hueMin = 0;
+        private int satMin = 255;
+        private int valMin = 0;
+        private int hueMax = 255;
+        private int satMax = 0;
+        private int valMax = 255;
+
         public Form1()
         {
             InitializeComponent();
@@ -79,7 +86,7 @@ namespace Ball_Webcam_Demo
             try
             {
                 _capture = new VideoCapture();
-                //_capture.Start();
+                _capture.Start();
                 _capture.ImageGrabbed += hsvMethod;
             }
             catch (NullReferenceException excpt)
@@ -94,6 +101,9 @@ namespace Ball_Webcam_Demo
             _capture.Retrieve(_frame, 0);
 
             generateMask();
+
+            imageBox2.Image = maskFinal;
+
 
             //Find all contours in HSV range
             CvInvoke.FindContours(maskFinal, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
@@ -126,6 +136,45 @@ namespace Ball_Webcam_Demo
             // Dispose all variables
             //disposeAllVars();
         }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #region trackbars       
+        private void HueMin_trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            hueMin = HueMin_trackBar1.Value;
+        }
+
+        private void HueMax_trackBar6_ValueChanged(object sender, EventArgs e)
+        {
+            hueMax = HueMax_trackBar6.Value;
+
+        }
+
+        private void SatMin_trackBar5_ValueChanged(object sender, EventArgs e)
+        {
+            satMin = SatMin_trackBar5.Value;
+        }
+
+        private void SatMax_trackBar4_ValueChanged(object sender, EventArgs e)
+        {
+            satMax = SatMax_trackBar4.Value;
+        }
+
+        private void ValMin_trackBar3_ValueChanged(object sender, EventArgs e)
+        {
+            valMin = ValMin_trackBar3.Value;
+
+        }
+
+        private void ValMax_trackBar2_ValueChanged(object sender, EventArgs e)
+        {
+            valMax = ValMax_trackBar2.Value;
+        }
+        #endregion
 
         public bool isBallShaped(VectorOfPoint maxContour, double error)
         {
@@ -182,6 +231,8 @@ namespace Ball_Webcam_Demo
                 //Convert BGR to HSV
                 CvInvoke.CvtColor(_frame, hsv, ColorConversion.Bgr2Hsv);
                 // Isolate Color range of interest, smooth, and convert to b/w
+                lowerBoundRed = new MCvScalar(hueMin, satMin, valMin);
+                upperBoundRed = new MCvScalar(hueMax, satMax, valMax);
                 CvInvoke.InRange(hsv, new ScalarArray(lowerBoundRed), new ScalarArray(upperBoundRed), maskRed);
                 CvInvoke.GaussianBlur(maskRed, filteredRed, new Size(25, 25), 0.0);
                 CvInvoke.Threshold(filteredRed, maskFinal, 150.0, 255.0, ThresholdType.Binary);

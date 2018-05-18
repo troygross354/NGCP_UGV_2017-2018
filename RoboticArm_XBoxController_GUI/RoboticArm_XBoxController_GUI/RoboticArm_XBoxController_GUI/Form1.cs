@@ -108,8 +108,8 @@ namespace RoboticArm_XBoxController_GUI
         /// </summary>
         private const int Xthreshold = 30, Ythreshold = 30;
 
-        int LidarDistance;
-        Serial fpga = new Serial("COM8", 9600);  // use 9600 for FPGA, use 57600
+        uint LidarDistance;
+        Serial fpga = new Serial("COM16", 9600);  // use 9600 for FPGA, use 57600
         public Form1()
         {
             InitializeComponent();
@@ -128,10 +128,16 @@ namespace RoboticArm_XBoxController_GUI
                 switch (bytes[1])
                 {
                     case 0x50:
-                        int MSB = bytes[3] - 0x30;
-                        int SB =  bytes[4] - 0x30;
-                        int LSB = bytes[5] - 0x30;
-                        LidarDistance = BitConverter.ToInt32(new byte[] { 0x00, (byte)MSB, (byte) SB, (byte)LSB }, 0);
+                        //int MSB = bytes[3] - 0x30;
+                        //int SB =  bytes[4] - 0x30;
+                        //int LSB = bytes[5] - 0x30;
+                        int pos = 0;
+                        for (int i = 3; i <= 5; i++)
+                        {
+                            LidarDistance |= ((uint)(bytes[i]-0x30) << pos);
+                            pos += 8;
+                        }
+                        //LidarDistance = BitConverter.ToInt32(new byte[] { 0x00, (byte)MSB, (byte) SB, (byte)LSB }, 0);
                         lblShoulder_pp.Text = LidarDistance.ToString();
                         break;
 
