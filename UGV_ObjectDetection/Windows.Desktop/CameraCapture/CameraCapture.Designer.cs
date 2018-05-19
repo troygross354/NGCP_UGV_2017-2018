@@ -59,7 +59,10 @@ namespace CameraCapture
             this.minDist_textBox1 = new System.Windows.Forms.TextBox();
             this.dp_textBox2 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.ballfound = new System.Windows.Forms.Label();
+            this.MaxContour_trackBar1 = new System.Windows.Forms.TrackBar();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HueMax_trackBar6)).BeginInit();
@@ -70,6 +73,7 @@ namespace CameraCapture
             ((System.ComponentModel.ISupportInitialize)(this.valMax_trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minDist_trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dp_trackBar2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxContour_trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // imageBox2
@@ -323,22 +327,50 @@ namespace CameraCapture
             this.label11.TabIndex = 50;
             this.label11.Text = "Hue Detection";
             // 
-            // button1
+            // ballfound
             // 
-            this.button1.Location = new System.Drawing.Point(717, 639);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(166, 37);
-            this.button1.TabIndex = 51;
-            this.button1.Text = "Test Thread";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.ballfound.AutoSize = true;
+            this.ballfound.Location = new System.Drawing.Point(585, 621);
+            this.ballfound.Name = "ballfound";
+            this.ballfound.Size = new System.Drawing.Size(54, 17);
+            this.ballfound.TabIndex = 52;
+            this.ballfound.Text = "label14";
+            // 
+            // MaxContour_trackBar1
+            // 
+            this.MaxContour_trackBar1.Location = new System.Drawing.Point(493, 562);
+            this.MaxContour_trackBar1.Maximum = 500;
+            this.MaxContour_trackBar1.Name = "MaxContour_trackBar1";
+            this.MaxContour_trackBar1.Size = new System.Drawing.Size(270, 56);
+            this.MaxContour_trackBar1.TabIndex = 53;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(500, 529);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(95, 17);
+            this.label14.TabIndex = 54;
+            this.label14.Text = "Max Countour";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(500, 621);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(79, 17);
+            this.label15.TabIndex = 55;
+            this.label15.Text = "Ball Found:";
             // 
             // CameraCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1334, 737);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.MaxContour_trackBar1);
+            this.Controls.Add(this.ballfound);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.minDist_textBox1);
             this.Controls.Add(this.dp_textBox2);
@@ -369,6 +401,8 @@ namespace CameraCapture
             this.Controls.Add(this.imageBox2);
             this.Name = "CameraCapture";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CameraCapture_FormClosing);
+            this.Load += new System.EventHandler(this.CameraCapture_Load);
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HueMax_trackBar6)).EndInit();
@@ -379,6 +413,7 @@ namespace CameraCapture
             ((System.ComponentModel.ISupportInitialize)(this.valMax_trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minDist_trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dp_trackBar2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxContour_trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -399,7 +434,6 @@ namespace CameraCapture
         private System.Windows.Forms.TrackBar SatMin_trackBar5;
         private System.Windows.Forms.TrackBar SatMax_trackBar4;
         private System.Windows.Forms.TrackBar ValMin_trackBar3;
-        private System.Windows.Forms.TrackBar HueMin_trackBar1;
         private System.Windows.Forms.TrackBar valMax_trackBar1;
         private System.Windows.Forms.TextBox TargetX_textBox1;
         private System.Windows.Forms.TextBox TargetY_textBox2;
@@ -414,7 +448,11 @@ namespace CameraCapture
         private System.Windows.Forms.TextBox minDist_textBox1;
         private System.Windows.Forms.TextBox dp_textBox2;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label ballfound;
+        private System.Windows.Forms.TrackBar MaxContour_trackBar1;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TrackBar HueMin_trackBar1;
     }
 }
 

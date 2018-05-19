@@ -79,7 +79,7 @@ namespace Ball_Webcam_Demo
             try
             {
                 _capture = new VideoCapture();
-                //_capture.Start();
+                _capture.Start();
                 _capture.ImageGrabbed += hsvMethod;
             }
             catch (NullReferenceException excpt)
@@ -102,7 +102,7 @@ namespace Ball_Webcam_Demo
             largestContour();
 
             //Check if contour is ball shaped (10 pixel error)
-            if (maxContour.Size != 0 && maxContour[0].Size != 0 && isBallShaped(maxContour[0], 0.20))
+            if (maxContour.Size != 0 && maxContour[0].Size != 0 && isBallShaped(maxContour[0], 10.20))
             {
                 ballfound = true;
                 angle = calcangle(center);
@@ -125,6 +125,11 @@ namespace Ball_Webcam_Demo
 
             // Dispose all variables
             //disposeAllVars();
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+
         }
 
         public bool isBallShaped(VectorOfPoint maxContour, double error)
@@ -191,7 +196,7 @@ namespace Ball_Webcam_Demo
         //Set the maximum contour
         public void largestContour()
         {
-            int maxVal = 0;
+            int maxVal = maxContour_trackBar1.Value;
             for (int i = 0; i < contours.Size; i++)
             {
                 if (contours[i].Size > maxVal)

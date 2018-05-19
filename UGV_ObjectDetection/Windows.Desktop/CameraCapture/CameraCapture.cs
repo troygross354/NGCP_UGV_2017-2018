@@ -38,8 +38,8 @@ namespace CameraCapture
         private int valMax = 255;
         private double dp = 1.5;
         private double minDist = 100.0;
-
-
+        private bool found = false;
+        private bool foundball = false;
 
         public CameraCapture()
         {
@@ -55,7 +55,8 @@ namespace CameraCapture
             maxContour = new VectorOfVectorOfPoint();
             center = new Point(0, 0);
 
-                    
+            
+
 
             CvInvoke.UseOpenCL = false;
             try
@@ -69,7 +70,7 @@ namespace CameraCapture
                 MessageBox.Show(excpt.Message);
             }
 
-        }
+        }           
 
         void hsvMethod(object sender, EventArgs e)
         {
@@ -87,17 +88,30 @@ namespace CameraCapture
                 CvInvoke.FindContours(maskFinal, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
 
                 // Find the largest contour
-                largestContour();
+                if(largestContour() > 50)//MaxContour_trackBar1.Value)
+                {
+                    found = true;
+                }     
+                else
+                {
+                    found = false;
+                }
 
                 // Get center of contour
-                findCenter(maxContour[0]);
+                findCenter(maxContour[0],0.2);
 
 
                 CvInvoke.CvtColor(_frame, greyCircles, ColorConversion.Bgr2Gray);
 
 
+                if (maxContour.Size != 0 && maxContour[0].Size != 0 && found)
+                {
+                    foundball = true;
+                }
+                else
+                    foundball = false;
                 #region circle detection
-                double cannyThreshold = 180.0;
+                    double cannyThreshold = 180.0;
                 double circleAccumulatorThreshold = 120;
                 CircleF[] circles = CvInvoke.HoughCircles(greyCircles, HoughType.Gradient, dp, minDist, cannyThreshold, circleAccumulatorThreshold, 5);
                 #endregion
@@ -110,6 +124,8 @@ namespace CameraCapture
 
                 //circleImageBox.Image = circleImage;
                 #endregion
+
+
 
                 //Draw on frame
                 CvInvoke.DrawContours(_frame, maxContour, -1, new MCvScalar(0.0, 255.0, 0.0));
@@ -131,7 +147,7 @@ namespace CameraCapture
             }
         }
 
-        public void largestContour()
+        public int largestContour()
         {
             int maxVal = 0;
             for (int i = 0; i < contours.Size; i++)
@@ -144,9 +160,11 @@ namespace CameraCapture
                     maxContour.Push(contours[i]);
                 }
             }
+
+            return maxVal;
         }
 
-        public void findCenter(VectorOfPoint maxContourTemp)
+        public void findCenter(VectorOfPoint maxContourTemp,double error)
         {
             // Get center of contour
             int avgX = 0, avgY = 0;
@@ -157,11 +175,29 @@ namespace CameraCapture
             }
             avgX /= maxContourTemp.Size;
             avgY /= maxContourTemp.Size;
-
+            bool notskip = true;
             //Set center of contour
             center = new Point(avgX, avgY);
+            //double firstDist = eucDist(maxContourTemp[0], center);
+            //for (int i = 1; i < maxContour.Size; i++)
+            //{
+            //    // Check if each point distance is within the allowable error range
+            //    if (Math.Abs(eucDist(maxContourTemp[i], center) - firstDist) / firstDist > error)
+            //    {
+            //        found = false;
+            //        notskip = false; 
+            //    }
+            //}
+            //if(notskip)
+            //    found = true;
         }
 
+
+
+        public double eucDist(Point p1, Point p2)
+        {
+            return Math.Sqrt(Math.Pow(Math.Abs(p1.X - p2.X), 2) + Math.Pow(Math.Abs(p1.Y - p2.Y), 2));
+        }
         public void generateMask()
         {
 
@@ -261,20 +297,45 @@ namespace CameraCapture
             udp.Connect(reciever_ip, udp_port);
 
             int msgSize = sizeof(int) + sizeof(int);
-            byte[] found = BitConverter.GetBytes(targetX);
-            byte[] targetangle = BitConverter.GetBytes(targetY);
+            byte[] SendX = BitConverter.GetBytes(targetX);
+            byte[] SendY = BitConverter.GetBytes(targetY);
+            byte[] SendBallfound = BitConverter.GetBytes(found);
             byte[] sendmsg = new byte[msgSize];
 
-            Buffer.BlockCopy(found, 0, sendmsg, 0, found.Length);
-            Buffer.BlockCopy(targetangle, 0, sendmsg, found.Length, targetangle.Length);
+            Buffer.BlockCopy(SendX, 0, sendmsg, 0, SendX.Length);
+            Buffer.BlockCopy(SendY, 0, sendmsg, SendX.Length, SendY.Length);
             udp.Send(sendmsg, sendmsg.Length);
 
         }
+
+
+
 
         private void button1_Click(object sender, EventArgs e)
         {
             //Thread demoThread = new Thread(new ThreadStart(this.ThreadProcSafe));
             //demoThread.Start();
+        }
+
+        private void CameraCapture_Load(object sender, EventArgs e)
+        {
+            HueMin_trackBar1.Value = Properties.Settings.Default.Hue_Min;
+            HueMax_trackBar6.Value = Properties.Settings.Default.Hue_Max;
+            SatMin_trackBar5.Value = Properties.Settings.Default.Sat_Min;
+            SatMax_trackBar4.Value = Properties.Settings.Default.Sat_Max;
+            ValMin_trackBar3.Value = Properties.Settings.Default.Value_Min;
+            valMax_trackBar1.Value = Properties.Settings.Default.Value_Max;
+        }
+
+        private void CameraCapture_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.Hue_Min = HueMin_trackBar1.Value;
+            Properties.Settings.Default.Hue_Max = HueMax_trackBar6.Value;
+            Properties.Settings.Default.Sat_Min = SatMin_trackBar5.Value;
+            Properties.Settings.Default.Sat_Max = SatMax_trackBar4.Value;
+            Properties.Settings.Default.Value_Min = ValMin_trackBar3.Value;
+            Properties.Settings.Default.Value_Max = valMax_trackBar1.Value;
+            Properties.Settings.Default.Save();
         }
 
 
@@ -284,7 +345,9 @@ namespace CameraCapture
         {
             ThreadHelperClass.SetText(this, TargetX_textBox1, center.X.ToString());
             ThreadHelperClass.SetText(this, TargetY_textBox2, center.Y.ToString());
+            ThreadHelperClass.SetText(this, ballfound,foundball.ToString());
         }
+
 
     }
 

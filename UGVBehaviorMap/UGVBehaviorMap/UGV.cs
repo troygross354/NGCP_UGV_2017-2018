@@ -80,6 +80,7 @@ namespace NGCP.UGV
         /// Speed factor of front wheel driving from -1000 to 1000
         /// </summary>
         private double speed;
+        /*
         public double Speed
         {
             get { return speed; }
@@ -92,11 +93,13 @@ namespace NGCP.UGV
             }
         }
         private double lastSpeed;
+        */
 
         /// <summary>
         /// Steering factor of driving from -1000 to 1000
         /// </summary>
         private double steering;
+        /*
         public double Steering
         {
             get { return steering; }
@@ -109,6 +112,7 @@ namespace NGCP.UGV
             }
         }
         private double lastSteering;
+        */
 
 
         #endregion Autonomous Related
@@ -951,12 +955,12 @@ namespace NGCP.UGV
             controlTimer.Interval = Settings.ControlRate;
             boardcastTimer.Interval = Settings.BoardCastRate;
             //start timers
-            //controlTimer.Start();
+            controlTimer.Start();
             boardcastTimer.Start();
             //start do work in a separate thread
             ThreadPool.QueueUserWorkItem(new WaitCallback(StartBehavior));
-            //Thread dowork = new Thread(new ThreadStart(DoWork));
-            //dowork.Start();
+            Thread dowork = new Thread(new ThreadStart(DoWork));
+            dowork.Start();
         }
         /// <summary>
         /// Stop operation of UGV
@@ -1081,8 +1085,9 @@ namespace NGCP.UGV
         void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
         {   
             //controlTimer.Enabled = false;
-            //Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
-            //SendControl();
+            Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+            if(Settings.DriveMode == DriveMode.Autonomous || Settings.DriveMode == DriveMode.SemiAutonomous)
+                SendControl();
             //controlTimer.Enabled = true; 
         }
 
