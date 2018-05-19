@@ -193,26 +193,39 @@ namespace UGV.Core.IO
                         // if eof detected
                         if (loc > 0)
                         {
+                            int eof = loc + 1;
                             //fetch package
-
-                            byte[] package = new byte[loc + 1];
-                            try
+                            if (message.Count == 9)
                             {
-                                int messageLength = loc + 1;
-                                for (int i = 0; i < messageLength; i++)
-                                    package[i] = message[i];
-                                //take off read package
-                                message.RemoveRange(0, messageLength);
-                                //do action of package received
-                                if (PackageReceived != null)
-                                    PackageReceived(package);
-                                count++;
+                                byte[] package = new byte[eof];
+                                try
+                                {
+                                    int messageLength = eof;
+                                    for (int i = 0; i < messageLength; i++)
+                                        package[i] = message[i];
+                                    //take off read package
+                                    message.RemoveRange(0, messageLength);
+                                    //do action of package received
+                                    if (PackageReceived != null)
+                                        PackageReceived(package);
+                                    count++;
+                                }
+                                catch (IndexOutOfRangeException) { }
                             }
-                            catch (IndexOutOfRangeException) { }
+                            // if found end of file, but message is too short, then clear message
+                            else if ((loc != -1) && (eof < 9))
+                                message.Clear();
+                            // if found end of file, but message is too long, then start clearing message until a correct message is found
+                            // probably dont need to check loc now that i realize it
+                            else if ((loc != -1) && (eof > 9))
+                                message.RemoveAt(0);
+
+
                         }
 
 
                     }
+                    else message.RemoveAt(0);
                 }
                 // else if not using FPGA
                 else
